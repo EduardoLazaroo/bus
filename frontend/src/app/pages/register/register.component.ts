@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { AuthService, UserDTO } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -12,34 +12,29 @@ import { Router } from '@angular/router';
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent {
-  name = '';
-  email = '';
-  password = '';
-  role = 'CLIENT'; // valor padrão
+  user: UserDTO = { name: '', email: '', password: '', role: 'USER' };
+  successMessage = '';
+  errorMessage = '';
 
-  roles = ['CLIENT', 'ADMIN', 'USER']; // opções que aparecem no select
+  constructor(private authService: AuthService, private router: Router) {}
 
-  private apiUrl = 'http://localhost:8080/api/users';
-
-  constructor(private http: HttpClient, private router: Router) {}
-
-  // onRegister() {
-  //   const userData = {
-  //     name: this.name,
-  //     email: this.email,
-  //     password: this.password,
-  //     role: this.role
-  //   };
-
-  //   this.http.post(this.apiUrl, userData).subscribe({
-  //     next: () => {
-  //       alert('Usuário cadastrado com sucesso!');
-  //       this.router.navigate(['/login']);
-  //     },
-  //     error: (err) => {
-  //       console.error(err);
-  //       alert('Erro ao cadastrar usuário');
-  //     }
-  //   });
-  // }
+  register() {
+    this.authService.register(this.user).subscribe({
+      next: (user) => {
+        this.successMessage = `Usuário ${user.name} criado com sucesso!`;
+        this.errorMessage = '';
+        // redireciona conforme role
+        if (user.role === 'ADMIN') {
+          this.router.navigate(['/admin']);
+        } else {
+          this.router.navigate(['/user']);
+        }
+      },
+      error: (err) => {
+        this.errorMessage = 'Erro ao criar usuário.';
+        this.successMessage = '';
+        console.error(err);
+      }
+    });
+  }
 }

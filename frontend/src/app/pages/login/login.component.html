@@ -1,13 +1,16 @@
 <h2>Login</h2>
-<!-- <form (ngSubmit)="()">
-  <input [(ngModel)]="email" name="email" placeholder="Email" />
-  <input
-    [(ngModel)]="password"
-    name="password"
-    type="password"
-    placeholder="Senha"
-  />
-  <button type="submit">Entrar</button>
-  <p>Não tem conta? <a routerLink="/register">Cadastre-se aqui</a></p>
+<form (ngSubmit)="login()">
+  <div>
+    <label>Email:</label>
+    <input type="email" [(ngModel)]="email" name="email" required />
+  </div>
 
-</form> -->
+  <div>
+    <label>Senha:</label>
+    <input type="password" [(ngModel)]="password" name="password" required />
+  </div>
+
+  <button type="submit">Entrar</button>
+</form>
+
+<p *ngIf="errorMessage" style="color:red">{{ errorMessage }}</p>
