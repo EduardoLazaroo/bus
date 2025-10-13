@@ -1,16 +1,17 @@
-<h2>Login</h2>
-<form (ngSubmit)="login()">
-  <div>
-    <label>Email:</label>
-    <input type="email" [(ngModel)]="email" name="email" required />
-  </div>
+<div class="auth-container">
+  <h2>Login</h2>
 
-  <div>
-    <label>Senha:</label>
-    <input type="password" [(ngModel)]="password" name="password" required />
-  </div>
+  <form (ngSubmit)="login()">
+    <input type="email" placeholder="Email" [(ngModel)]="email" name="email" required />
+    <input type="password" placeholder="Senha" [(ngModel)]="password" name="password" required />
 
-  <button type="submit">Entrar</button>
-</form>
+    <button type="submit">Entrar</button>
+  </form>
 
-<p *ngIf="errorMessage" style="color:red">{{ errorMessage }}</p>
+  <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+
+  <p class="switch">
+    Não tem conta?
+    <a (click)="goToRegister()">Crie uma agora</a>
+  </p>
+</div>

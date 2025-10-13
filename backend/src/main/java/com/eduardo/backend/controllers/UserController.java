@@ -15,9 +15,21 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/ping")
+    public String ping() {
+        return "pong";
+    }
+
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO){
         UserDTO createdUser = userService.createUser(userDTO);
         return ResponseEntity.ok(createdUser);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserDTO> login(@RequestBody UserDTO loginRequest) {
+        System.out.println(">>> Entrou no método /api/users/login");
+        UserDTO userDTO = userService.login(loginRequest);
+        return ResponseEntity.ok(userDTO);
     }
 }

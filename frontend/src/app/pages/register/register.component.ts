@@ -23,18 +23,16 @@ export class RegisterComponent {
       next: (user) => {
         this.successMessage = `Usuário ${user.name} criado com sucesso!`;
         this.errorMessage = '';
-        // redireciona conforme role
-        if (user.role === 'ADMIN') {
-          this.router.navigate(['/admin']);
-        } else {
-          this.router.navigate(['/user']);
-        }
+        setTimeout(() => this.router.navigate(['/login']), 1000);
       },
-      error: (err) => {
+      error: () => {
         this.errorMessage = 'Erro ao criar usuário.';
         this.successMessage = '';
-        console.error(err);
       }
     });
+  }
+
+  goToLogin() {
+    this.router.navigate(['/login']);
   }
 }

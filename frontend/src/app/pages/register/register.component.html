@@ -1,30 +1,25 @@
-<h2>Cadastro de Usuário</h2>
-<form (ngSubmit)="register()" #userForm="ngForm">
-  <div>
-    <label>Nome:</label>
-    <input type="text" [(ngModel)]="user.name" name="name" required />
-  </div>
+<div class="auth-container">
+  <h2>Criar Conta</h2>
 
-  <div>
-    <label>Email:</label>
-    <input type="email" [(ngModel)]="user.email" name="email" required />
-  </div>
+  <form (ngSubmit)="register()" #userForm="ngForm">
+    <input type="text" placeholder="Nome" [(ngModel)]="user.name" name="name" required />
+    <input type="email" placeholder="Email" [(ngModel)]="user.email" name="email" required />
+    <input type="password" placeholder="Senha" [(ngModel)]="user.password" name="password" required />
 
-  <div>
-    <label>Senha:</label>
-    <input type="password" [(ngModel)]="user.password" name="password" required />
-  </div>
-
-  <div>
-    <label>Role:</label>
     <select [(ngModel)]="user.role" name="role">
       <option value="USER">USER</option>
       <option value="ADMIN">ADMIN</option>
+      <option value="DRIVER">DRIVER</option>
     </select>
-  </div>
 
-  <button type="submit" [disabled]="userForm.invalid">Cadastrar</button>
-</form>
+    <button type="submit" [disabled]="userForm.invalid">Cadastrar</button>
+  </form>
 
-<p *ngIf="successMessage" style="color:green">{{ successMessage }}</p>
-<p *ngIf="errorMessage" style="color:red">{{ errorMessage }}</p>
+  <p *ngIf="successMessage" class="success">{{ successMessage }}</p>
+  <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+
+  <p class="switch">
+    Já tem conta?
+    <a (click)="goToLogin()">Faça login</a>
+  </p>
+</div>

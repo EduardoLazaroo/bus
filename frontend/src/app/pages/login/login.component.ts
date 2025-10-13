@@ -21,16 +21,19 @@ export class LoginComponent {
   login() {
     this.authService.login(this.email, this.password).subscribe({
       next: (user) => {
-        if (user.role === 'ADMIN') {
-          this.router.navigate(['/admin']);
+        if (user.role === 'ADMIN' || user.role === 'USER' || user.role === 'DRIVER') {
+          this.router.navigate(['/home']);
         } else {
-          this.router.navigate(['/user']);
+          this.errorMessage = 'Role inválida!';
         }
       },
-      error: (err) => {
-        this.errorMessage = 'Usuário ou senha incorretos.';
-        console.error(err);
+      error: () => {
+        this.errorMessage = 'Credenciais inválidas!';
       }
     });
+  }
+
+  goToRegister() {
+    this.router.navigate(['/register']);
   }
 }

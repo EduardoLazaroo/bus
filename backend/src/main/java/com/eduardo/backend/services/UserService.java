@@ -4,4 +4,5 @@ import com.eduardo.backend.dtos.UserDTO;
 
 public interface UserService {
     UserDTO createUser(UserDTO userDTO);
+    UserDTO login(UserDTO loginRequest);
 }
