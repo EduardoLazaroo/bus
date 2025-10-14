@@ -1,6 +1,7 @@
 package com.eduardo.backend.controllers;
 
 import com.eduardo.backend.dtos.UserDTO;
+import com.eduardo.backend.dtos.LoginDTO;
 import com.eduardo.backend.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +12,7 @@ public class UserController {
 
     private final UserService userService;
 
-    public UserController(UserService userService){
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
@@ -21,13 +22,13 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO){
+    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
         UserDTO createdUser = userService.createUser(userDTO);
-        return ResponseEntity.ok(createdUser);
+        return ResponseEntity.status(201).body(createdUser);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserDTO> login(@RequestBody UserDTO loginRequest) {
+    public ResponseEntity<UserDTO> login(@RequestBody LoginDTO loginRequest) {
         System.out.println(">>> Entrou no método /api/users/login");
         UserDTO userDTO = userService.login(loginRequest);
         return ResponseEntity.ok(userDTO);

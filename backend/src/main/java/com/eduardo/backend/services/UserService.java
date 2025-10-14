@@ -1,8 +1,9 @@
 package com.eduardo.backend.services;
 
 import com.eduardo.backend.dtos.UserDTO;
+import com.eduardo.backend.dtos.LoginDTO;
 
 public interface UserService {
     UserDTO createUser(UserDTO userDTO);
-    UserDTO login(UserDTO loginRequest);
+    UserDTO login(LoginDTO loginRequest);
 }
