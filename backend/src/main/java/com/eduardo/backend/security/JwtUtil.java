@@ -1,48 +1,56 @@
-// package com.eduardo.backend.security;
+package com.eduardo.backend.security;
 
-// import io.jsonwebtoken.Claims;
-// import io.jsonwebtoken.Jwts;
-// import io.jsonwebtoken.SignatureAlgorithm;
-// import org.springframework.stereotype.Component;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.stereotype.Component;
 
-// import java.util.Date;
+import javax.crypto.SecretKey;
+import java.util.Date;
 
-// @Component
-// public class JwtUtil {
+@Component
+public class JwtUtil {
 
-//     private final String SECRET_KEY = "minhaChaveSecreta123"; // em produção, usar variável de ambiente
-//     private final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hora
+    // Gera uma chave de 256 bits (pode usar variável de ambiente em produção)
+    private static final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(
+            "umaChaveSuperSecretaDePeloMenos32Caracteres!".getBytes()
+    );
 
-//     public String generateToken(String email, String role) {
-//         return Jwts.builder()
-//                 .setSubject(email)
-//                 .claim("role", role)
-//                 .setIssuedAt(new Date())
-//                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-//                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
-//                 .compact();
-//     }
+    private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 horau
 
-//     public Claims extractClaims(String token) {
-//         return Jwts.parser()
-//                 .setSigningKey(SECRET_KEY)
-//                 .parseClaimsJws(token)
-//                 .getBody();
-//     }
+    public String generateToken(String email, String role) {
+        return Jwts.builder()
+                .setSubject(email)
+                .claim("role", role)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
+                .compact();
+    }
 
-//     public boolean isTokenValid(String token) {
-//         try {
-//             return !extractClaims(token).getExpiration().before(new Date());
-//         } catch (Exception e) {
-//             return false;
-//         }
-//     }
+    public Claims extractClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(SECRET_KEY)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
 
-//     public String extractEmail(String token) {
-//         return extractClaims(token).getSubject();
-//     }
+    public boolean isTokenValid(String token) {
+        try {
+            Claims claims = extractClaims(token);
+            return claims.getExpiration().after(new Date());
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
-//     public String extractRole(String token) {
-//         return (String) extractClaims(token).get("role");
-//     }
-// }
+    public String extractEmail(String token) {
+        return extractClaims(token).getSubject();
+    }
+
+    public String extractRole(String token) {
+        return (String) extractClaims(token).get("role");
+    }
+}

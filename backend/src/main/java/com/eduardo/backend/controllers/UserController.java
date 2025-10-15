@@ -2,6 +2,8 @@ package com.eduardo.backend.controllers;
 
 import com.eduardo.backend.dtos.UserDTO;
 import com.eduardo.backend.dtos.LoginDTO;
+import com.eduardo.backend.models.User;
+import com.eduardo.backend.repositories.UserRepository;
 import com.eduardo.backend.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,14 +13,11 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final UserRepository userRepository;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserRepository userRepository) {
         this.userService = userService;
-    }
-
-    @GetMapping("/ping")
-    public String ping() {
-        return "pong";
+        this.userRepository = userRepository;
     }
 
     @PostMapping
@@ -29,8 +28,15 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<UserDTO> login(@RequestBody LoginDTO loginRequest) {
-        System.out.println(">>> Entrou no método /api/users/login");
         UserDTO userDTO = userService.login(loginRequest);
         return ResponseEntity.ok(userDTO);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserDTO> getCurrentUser(@RequestAttribute("email") String email) {
+        return userRepository.findByEmail(email)
+                .map(UserDTO::fromEntity)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }
