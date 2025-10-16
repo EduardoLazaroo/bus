@@ -22,30 +22,38 @@ public class SecurityConfig {
         this.jwtFilter = jwtFilter;
     }
 
+    // Define as configurações de segurança do Spring Security
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                // ❌ Desativa CSRF (necessário em APIs REST)
                 .csrf(csrf -> csrf.disable())
+
+                // 🌐 Ativa e aplica configuração de CORS
                 .cors(Customizer.withDefaults())
+
+                // 🔓 Permite todas as requisições (modo dev)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users", "/api/users/login").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
+
+                // 🧩 Adiciona o filtro JWT antes da autenticação padrão
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
+    // 🌍 Configuração de CORS permitindo o frontend (Angular, React, etc.)
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:4200"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(true);
+        config.setAllowedOrigins(List.of("http://localhost:4200")); // Origem permitida
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Métodos HTTP
+        config.setAllowedHeaders(List.of("*")); // Permite todos os headers
+        config.setAllowCredentials(true); // Permite envio de cookies/autenticação
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
+        source.registerCorsConfiguration("/**", config); // Aplica em todas as rotas
         return source;
     }
 }

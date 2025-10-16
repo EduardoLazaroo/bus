@@ -2,14 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-
-export interface UserDTO {
-  id?: number;
-  name: string;
-  email: string;
-  password?: string;
-  role?: 'USER' | 'ADMIN' | 'DRIVER';
-}
+import { UserDTO, UserRole } from './auth.model';
+export type { UserDTO, UserRole } from './auth.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -22,10 +16,11 @@ export class AuthService {
   }
 
   register(user: UserDTO): Observable<UserDTO> {
-    return this.http.post<UserDTO>(this.apiUrl, user).pipe(
+    return this.http.post<UserDTO>(`${this.apiUrl}/register`, user).pipe(
       tap(user => {
         this.currentUser = user;
         localStorage.setItem('user', JSON.stringify(user));
+        if (user.token) localStorage.setItem('token', user.token);
       })
     );
   }
@@ -35,16 +30,22 @@ export class AuthService {
       tap(user => {
         this.currentUser = user;
         localStorage.setItem('user', JSON.stringify(user));
+        if (user.token) localStorage.setItem('token', user.token);
       })
     );
+  }
+
+  getCurrentUser(): Observable<UserDTO> {
+    return this.http.get<UserDTO>(`${this.apiUrl}/me`);
   }
 
   logout() {
     this.currentUser = null;
     localStorage.removeItem('user');
+    localStorage.removeItem('token');
   }
 
-  getUserRole(): 'USER' | 'ADMIN' | 'DRIVER' | null {
+  getUserRole(): UserRole | null {
     return this.currentUser?.role ?? null;
   }
 
@@ -52,7 +53,7 @@ export class AuthService {
     return !!this.currentUser;
   }
 
-  hasAnyRole(roles: string[]): boolean {
+  hasAnyRole(roles: UserRole[]): boolean {
     const role = this.getUserRole();
     return role ? roles.includes(role) : false;
   }
