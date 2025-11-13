@@ -1,5 +1,6 @@
 package com.eduardo.backend.models;
 
+import com.eduardo.backend.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,4 +25,7 @@ public class CompanyLink {
     private Company company;
 
     private Boolean approved = false; // status do vínculo
+
+    @Enumerated(EnumType.STRING)
+    private UserRole roleInCompany; // DRIVER ou CLIENT (ou OWNER se quiser)
 }

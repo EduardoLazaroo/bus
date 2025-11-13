@@ -23,15 +23,18 @@
             </column>
             <column name="name" type="VARCHAR(255)"/>
             <column name="cnpj" type="VARCHAR(50)"/>
-            <column name="active" type="BOOLEAN" defaultValueBoolean="true"/>
+            <column name="address" type="VARCHAR(50)"/>
+            <column name="active" type="BOOLEAN" defaultValueBoolean="false"/>
+            <column name="status" type="VARCHAR(50)" defaultValue="PENDING"/>
+            <column name="owner_id" type="BIGINT"/>
         </createTable>
 
         <createTable tableName="company_links">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="status" type="VARCHAR(50)"/>
-            <column name="role" type="VARCHAR(50)"/>
+            <column name="approved" type="BOOLEAN" defaultValueBoolean="false"/>
+            <column name="role_in_company" type="VARCHAR(50)"/>
             <column name="user_id" type="BIGINT"/>
             <column name="company_id" type="BIGINT"/>
         </createTable>

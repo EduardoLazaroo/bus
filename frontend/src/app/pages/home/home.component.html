@@ -14,5 +14,8 @@
     <p>Você está na área do motorista.</p>
   </div>
 
+  <div *ngIf="userRole === 'OWNER'">
+    <p>Você está na área do proprietário.</p>
+
   <button (click)="logout()">Sair</button>
 </div>

@@ -1,6 +1,4 @@
-// src/app/core/services/auth.model.ts
-
-export type UserRole = 'USER' | 'ADMIN' | 'DRIVER';
+export type UserRole = 'USER' | 'ADMIN' | 'DRIVER' | 'OWNER';
 
 export interface UserDTO {
   id?: number;

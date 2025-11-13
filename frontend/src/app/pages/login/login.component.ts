@@ -9,7 +9,7 @@ import { AuthService } from '../../core/services/auth.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
   email = '';
@@ -21,7 +21,12 @@ export class LoginComponent {
   login() {
     this.authService.login(this.email, this.password).subscribe({
       next: (user) => {
-        if (user.role === 'ADMIN' || user.role === 'USER' || user.role === 'DRIVER') {
+        if (
+          user.role === 'ADMIN' ||
+          user.role === 'USER' ||
+          user.role === 'DRIVER' ||
+          user.role === 'OWNER'
+        ) {
           this.router.navigate(['/home']);
         } else {
           this.errorMessage = 'Role inválida!';
@@ -29,7 +34,7 @@ export class LoginComponent {
       },
       error: () => {
         this.errorMessage = 'Credenciais inválidas!';
-      }
+      },
     });
   }
 

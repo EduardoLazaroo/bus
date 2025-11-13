@@ -13,7 +13,7 @@ export const routes: Routes = [
     path: 'home',
     component: HomeComponent,
     canActivate: [RoleGuard],
-    data: { roles: ['ADMIN', 'USER', 'DRIVER'] },
+    data: { roles: ['ADMIN', 'USER', 'DRIVER', 'OWNER'] },
   },
 
   { path: '**', redirectTo: '' },

@@ -1,5 +1,6 @@
 package com.eduardo.backend.models;
 
+import com.eduardo.backend.enums.CompanyStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,7 +24,14 @@ public class Company {
 
     private String address;
 
-    private Boolean active = true;
+    private Boolean active = false;
+
+    @Enumerated(EnumType.STRING)
+    private CompanyStatus status = CompanyStatus.PENDING;
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private User owner;
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     private List<Vehicle> vehicles;
