@@ -9,8 +9,23 @@ export const RoleGuard: CanActivateFn = (route) => {
   const expectedRoles = route.data['roles'] as string[]; // roles permitidas da rota
   const userRole = auth.getUserRole();                  // role atual do usuário
 
-  if (!userRole || !expectedRoles.includes(userRole)) {
+  // Map para redirecionamento automático
+  const roleRedirectMap: Record<string, string> = {
+    CLIENT: '/home-client',
+    OWNER: '/home-owner',
+    ADMIN: '/home-admin',
+    DRIVER: '/home-driver'
+  };
+
+  if (!userRole) {
     router.navigate(['/login'], { replaceUrl: true });  // redireciona se não tiver permissão
+    return false;
+  }
+
+  // SE O USUÁRIO TEM ROLE MAS NÃO É A ESPERADA → envia para a home correta da role dele
+  if (!expectedRoles.includes(userRole)) {
+    const redirect = roleRedirectMap[userRole] || '/login';
+    router.navigate([redirect], { replaceUrl: true });
     return false;
   }
 

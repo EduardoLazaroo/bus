@@ -12,7 +12,7 @@ import { AuthService, UserDTO } from '../../core/services/auth.service';
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent {
-  user: UserDTO = { name: '', email: '', password: '', role: 'USER' };
+  user: UserDTO = { name: '', email: '', password: '', role: 'CLIENT' };
   successMessage = '';
   errorMessage = '';
 

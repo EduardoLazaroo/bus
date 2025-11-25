@@ -1,4 +1,4 @@
-export type UserRole = 'USER' | 'ADMIN' | 'DRIVER' | 'OWNER';
+export type UserRole = 'CLIENT' | 'ADMIN' | 'DRIVER' | 'OWNER';
 
 export interface UserDTO {
   id?: number;

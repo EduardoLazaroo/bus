@@ -21,16 +21,21 @@ export class LoginComponent {
   login() {
     this.authService.login(this.email, this.password).subscribe({
       next: (user) => {
-        if (
-          user.role === 'ADMIN' ||
-          user.role === 'USER' ||
-          user.role === 'DRIVER' ||
-          user.role === 'OWNER'
-        ) {
-          this.router.navigate(['/home']);
-        } else {
+        const routeMap: Record<string, string> = {
+          ADMIN: '/home-admin',
+          CLIENT: '/home-client',
+          DRIVER: '/home-driver',
+          OWNER: '/home-owner'
+        };
+
+        const redirect = routeMap[user?.role!];
+
+        if (!redirect) {
           this.errorMessage = 'Role inválida!';
+          return;
         }
+
+        this.router.navigate([redirect]);
       },
       error: () => {
         this.errorMessage = 'Credenciais inválidas!';
