@@ -1,0 +1,70 @@
+<div *ngIf="userRole === 'OWNER'">
+  <form (ngSubmit)="registerCompany()">
+    <div class="component-register" *ngIf="step === 1">
+      <div>
+        <label for="name">Nome da Empresa:</label>
+        <input
+          type="text"
+          id="name"
+          [(ngModel)]="company.name"
+          name="name"
+          required
+        />
+      </div>
+      <div>
+        <label for="cnpj">CNPJ:</label>
+        <input
+          type="text"
+          id="cnpj"
+          [(ngModel)]="company.cnpj"
+          name="cnpj"
+          required
+        />
+      </div>
+      <div>
+        <label for="address">Endereço:</label>
+        <input
+          type="text"
+          id="address"
+          [(ngModel)]="company.address"
+          name="address"
+          required
+        />
+      </div>
+      <button (click)="step = 2">Próximo</button>
+    </div>
+
+    <div class="component" *ngIf="step === 2">
+      <img src="assets/register_imgone_owner.png" alt="" class="img-register"/>
+      <h2>Pronto!</h2>
+      <p>
+        Após finalizar seu cadastro como empresa, aguarde nosso contato. Se
+        preferir adiantar o processo, você pode entrar em contato conosco na
+        próxima tela
+      </p>
+
+      <button type="submit">Cadastrar Empresa</button>
+    </div>
+  </form>
+</div>
+
+<!-- VIEW DO ADMIN -->
+<div *ngIf="userRole === 'ADMIN'">
+  <p>Você está na área de administração.</p>
+  <p>Abaixo estão as empresas pendentes para aprovação:</p>
+
+  <div *ngIf="pendingCompanies.length === 0">
+    <p>Nenhuma empresa pendente no momento.</p>
+  </div>
+
+  <div *ngFor="let comp of pendingCompanies" class="company-card">
+    <p><strong>Nome:</strong> {{ comp.name }}</p>
+    <p><strong>CNPJ:</strong> {{ comp.cnpj }}</p>
+    <p><strong>Endereço:</strong> {{ comp.address }}</p>
+
+    <button (click)="approve(comp.id!, true)">Aprovar</button>
+    <button (click)="approve(comp.id!, false)" class="reject-btn">
+      Reprovar
+    </button>
+  </div>
+</div>

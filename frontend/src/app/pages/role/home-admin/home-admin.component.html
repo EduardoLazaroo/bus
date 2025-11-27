@@ -1,10 +1,22 @@
-<div class="home-container">
-  <h2>Bem-vindo à Home!</h2>
-  <p>Sua role atual é: <strong>{{ userRole }}</strong></p>
+<button (click)="logout()">Sair</button>
 
-  <div>
-    <p>Você está na área de administração.</p>
+<h1>Painel do Administrador</h1>
+
+<!-- Nenhuma empresa pendente -->
+<div *ngIf="pendingCompanies.length === 0" class="no-requests">
+  <p>Não há solicitações de empresas pendentes.</p>
+</div>
+
+<!-- Lista de pendentes -->
+<div *ngIf="pendingCompanies.length > 0">
+  <h2>Solicitações de Empresa</h2>
+
+  <div *ngFor="let comp of pendingCompanies" class="company-card">
+    <p><strong>Nome:</strong> {{ comp.name }}</p>
+    <p><strong>CNPJ:</strong> {{ comp.cnpj }}</p>
+    <p><strong>Endereço:</strong> {{ comp.address }}</p>
+
+    <button (click)="approve(comp.id!, true)">Aprovar</button>
+    <button (click)="approve(comp.id!, false)" class="reject-btn">Reprovar</button>
   </div>
-
-  <button (click)="logout()">Sair</button>
 </div>

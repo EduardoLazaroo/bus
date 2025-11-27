@@ -1,10 +1,31 @@
-<div class="home-container">
-  <h2>Bem-vindo à Home!</h2>
-  <p>Sua role atual é: <strong>{{ userRole }}</strong></p>
+<button (click)="logout()">Sair</button>
 
-  <div>
-    <p>Você está na área do proprietário.</p>
-  </div>
+<!-- NÃO TEM EMPRESA -->
+<div *ngIf="status === 'NO_COMPANY'">
+  <app-company-activation
+    (companyCreated)="companyCreated()"
+  ></app-company-activation>
+</div>
 
-  <button (click)="logout()">Sair</button>
+<!-- AGUARDANDO APROVAÇÃO -->
+<div *ngIf="status === 'PENDING'" class="pending-box">
+  <p>Seu cadastro está aguardando aprovação.</p>
+</div>
+
+<div *ngIf="status === 'REJECTED'" class="rejected-box">
+  <img src="assets/rejected_img.png" alt="" />
+  <h2>Cadastro Rejeitado</h2>
+  <p>
+    Infelizmente, seu cadastro como empresa foi rejeitado. Por favor, entre em
+    contato conosco para mais informações.
+  </p>
+  <button>Entrar em Contato</button>
+</div>
+
+<!-- EMPRESA ATIVA -->
+<div *ngIf="status === 'APPROVED'" class="home-container">
+  <h1>Bem-vindo!</h1>
+  <p><strong>Empresa ativa:</strong></p>
+
+  <p>{{ company?.name }} — {{ company?.cnpj }}</p>
 </div>
