@@ -1,31 +1,87 @@
-<button (click)="logout()">Sair</button>
+<button class="btn-back" (click)="logout()">⟵ Sair</button>
 
-<!-- NÃO TEM EMPRESA -->
-<div *ngIf="status === 'NO_COMPANY'">
+<!-- SEM EMPRESA -->
+<div *ngIf="status === 'NO_COMPANY'" class="no-company">
   <app-company-activation
     (companyCreated)="companyCreated()"
   ></app-company-activation>
 </div>
 
-<!-- AGUARDANDO APROVAÇÃO -->
-<div *ngIf="status === 'PENDING'" class="pending-box">
-  <p>Seu cadastro está aguardando aprovação.</p>
-</div>
-
-<div *ngIf="status === 'REJECTED'" class="rejected-box">
-  <img src="assets/rejected_img.png" alt="" />
+<!-- REJEITADO -->
+<div *ngIf="status === 'REJECTED'" class="card">
   <h2>Cadastro Rejeitado</h2>
-  <p>
-    Infelizmente, seu cadastro como empresa foi rejeitado. Por favor, entre em
-    contato conosco para mais informações.
-  </p>
-  <button>Entrar em Contato</button>
+  <p>Entre em contato para prosseguir com nova tentativa.</p>
+  <button class="btn-secondary">Entrar em contato</button>
 </div>
 
-<!-- EMPRESA ATIVA -->
-<div *ngIf="status === 'APPROVED'" class="home-container">
-  <h1>Bem-vindo!</h1>
-  <p><strong>Empresa ativa:</strong></p>
+<!-- PENDENTE -->
+<div *ngIf="status === 'PENDING'" class="pending">
+  <h2>Bem vindo, Eduardo</h2>
+  <div class="section-main">
+    <div class="divider-top">
+      <span
+        >Entraremos em contato com você. Para utilizar nosso serviço ainda
+        faltam etapas</span
+      >
+      <img
+        src="../../../../assets/imgs/telecommuting.png"
+        class="img-register"
+      />
+    </div>
+    <div class="divider-bottom">
+      <div class="notice">
+        <span>Depois que finalizar, já pode usar!</span>
+        <div class="status">
+          <span>o</span>
+          <span>Pendente</span>
+        </div>
+      </div>
+      <div class="content-buttons">
+        <button class="btn">Configuração avançada</button>
+        <button class="btn">Liberar acesso</button>
+      </div>
+    </div>
+  </div>
 
-  <p>{{ company?.name }} — {{ company?.cnpj }}</p>
+  <div class="content-sections">
+    <span>Serviços que terá direito</span>
+    <div class="section-one">
+      <span class="title">Finaceiro</span>
+      <span>Controle facilmente o pagamento de mensalidades.</span>
+      <span>Acompanhe suas finanças.</span>
+      <span>Consulte o extrato financeiro.</span>
+    </div>
+    <div class="section-two">
+      <span class="title">Rotas</span>
+      <span>Acompanhar em tempo real.</span>
+      <span>Gerar mapa</span>
+      <span>Flexibilidade que você precisa para criar suas rotas.</span>
+    </div>
+    <div class="section-three">
+      <span class="title">Gestão</span>
+      <span>Controle de passageiros</span>
+      <span>Confirmação de embarque</span>
+      <span>Avisos importantes</span>
+      <span>Enquetes</span>
+    </div>
+    <div class="section-four">
+      <span class="title">Tudo na palma da mão</span>
+      <span
+        >Tenha a gestão do seu transporte escolar na mão, de forma simples,
+        rápida e de onde quiser</span
+      >
+    </div>
+  </div>
+</div>
+
+<!-- APROVADO -->
+<div *ngIf="status === 'APPROVED'" class="box">
+  <h1>Bem-vindo!</h1>
+  <p class="label">Empresa ativa</p>
+
+  <div class="company-view">
+    <strong>{{ company?.name }}</strong
+    ><br />
+    <span>{{ company?.cnpj }}</span>
+  </div>
 </div>

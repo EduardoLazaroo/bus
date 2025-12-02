@@ -1,70 +1,64 @@
-<div *ngIf="userRole === 'OWNER'">
-  <form (ngSubmit)="registerCompany()">
-    <div class="component-register" *ngIf="step === 1">
-      <div>
-        <label for="name">Nome da Empresa:</label>
-        <input
-          type="text"
-          id="name"
-          [(ngModel)]="company.name"
-          name="name"
-          required
-        />
-      </div>
-      <div>
-        <label for="cnpj">CNPJ:</label>
-        <input
-          type="text"
-          id="cnpj"
-          [(ngModel)]="company.cnpj"
-          name="cnpj"
-          required
-        />
-      </div>
-      <div>
-        <label for="address">Endereço:</label>
-        <input
-          type="text"
-          id="address"
-          [(ngModel)]="company.address"
-          name="address"
-          required
-        />
-      </div>
-      <button (click)="step = 2">Próximo</button>
+<!-- OWNER -->
+<div *ngIf="userRole === 'OWNER'" class="center">
+  <form (ngSubmit)="registerCompany()" class="form-card">
+    <!-- ETAPA 1 -->
+    <div *ngIf="step === 1" class="step">
+      <h2>Cadastro da Empresa</h2>
+
+      <label>Nome da Empresa</label>
+      <input type="text" [(ngModel)]="company.name" name="name" required />
+
+      <label>CNPJ</label>
+      <input type="text" [(ngModel)]="company.cnpj" name="cnpj" required />
+
+      <label>Endereço</label>
+      <input
+        type="text"
+        [(ngModel)]="company.address"
+        name="address"
+        required
+      />
+
+      <button type="button" class="btn-primary" (click)="step = 2">
+        Próximo →
+      </button>
     </div>
 
-    <div class="component" *ngIf="step === 2">
-      <img src="assets/register_imgone_owner.png" alt="" class="img-register"/>
-      <h2>Pronto!</h2>
-      <p>
-        Após finalizar seu cadastro como empresa, aguarde nosso contato. Se
-        preferir adiantar o processo, você pode entrar em contato conosco na
-        próxima tela
-      </p>
+    <!-- ETAPA 2 -->
+    <div *ngIf="step === 2" class="step confirm">
+      <img
+        src="../../../../assets/imgs/register_imgone_owner.png"
+        class="img-register"
+      />
 
-      <button type="submit">Cadastrar Empresa</button>
+      <h2>Pronto!</h2>
+      <p>Finalize o cadastro e aguarde retorno da equipe.</p>
+
+      <button type="submit" class="btn-primary full">Cadastrar Empresa</button>
     </div>
   </form>
 </div>
 
-<!-- VIEW DO ADMIN -->
-<div *ngIf="userRole === 'ADMIN'">
-  <p>Você está na área de administração.</p>
-  <p>Abaixo estão as empresas pendentes para aprovação:</p>
+<!-- ADMIN -->
+<div *ngIf="userRole === 'ADMIN'" class="admin-list">
+  <h2>Empresas Pendentes</h2>
 
-  <div *ngIf="pendingCompanies.length === 0">
-    <p>Nenhuma empresa pendente no momento.</p>
-  </div>
+  <p *ngIf="pendingCompanies.length === 0" class="empty">
+    Nenhuma pendência encontrada
+  </p>
 
   <div *ngFor="let comp of pendingCompanies" class="company-card">
-    <p><strong>Nome:</strong> {{ comp.name }}</p>
-    <p><strong>CNPJ:</strong> {{ comp.cnpj }}</p>
-    <p><strong>Endereço:</strong> {{ comp.address }}</p>
+    <strong>{{ comp.name }}</strong>
+    <p>CNPJ: {{ comp.cnpj }}</p>
+    <p>{{ comp.address }}</p>
 
-    <button (click)="approve(comp.id!, true)">Aprovar</button>
-    <button (click)="approve(comp.id!, false)" class="reject-btn">
-      Reprovar
-    </button>
+    <div class="row-btns">
+      <button class="btn-primary small" (click)="approve(comp.id!, true)">
+        Aprovar
+      </button>
+      <button class="btn-danger small" (click)="approve(comp.id!, false)">
+        Reprovar
+      </button>
+    </div>
   </div>
 </div>

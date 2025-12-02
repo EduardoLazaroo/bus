@@ -1,0 +1,168 @@
+/* =======================
+   HOME OWNER VIEW
+======================= */
+.btn-back {
+  background: transparent;
+  border: none;
+  font-size: 15px;
+  margin: 15px;
+  cursor: pointer;
+  color: #1f3a54;
+}
+
+.card {
+  width: 430px;
+  background: #fff;
+  padding: 28px;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: 0 0 12px #00000014;
+}
+
+// SEM EMPRESA
+.no-company {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+// REJEITADO
+.img-status {
+  width: 250px;
+  margin-bottom: 10px;
+}
+
+.btn-secondary {
+  background: #dbeafe;
+  border: 1px solid #94b4e5;
+  color: #1e3a5f;
+  border-radius: 10px;
+  padding: 12px 18px;
+  font-size: 15px;
+}
+
+.btn-secondary:hover {
+  background: #cbdff9;
+}
+
+
+// PENDENTE
+.pending {
+  display: flex;
+  flex-direction: column;
+  // align-items: flex-start;
+  gap: 1rem;
+  padding: 32px;
+
+  h2 {
+    font-size: 2rem;
+    color: #252525;
+  }
+
+  .section-main {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .divider-top {
+      display: flex;
+      flex-direction: row;
+      gap: 5px;
+      padding: 15px;
+      background-color: #27445d20;
+      align-items: center;
+      border-radius: 5px;
+      color: #000000;
+      font-weight: 600;
+    }
+
+    .divider-bottom {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      background-color: white;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2);
+
+      .notice {
+        display: flex;
+        justify-content: space-between;
+
+        .status {
+          display: flex;
+          gap: 5px;
+          background-color: #FFC1C1;
+          color: red;
+          padding: 5px 10px;
+          border-radius: 5px;
+        }
+      }
+
+      .content-buttons {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+
+        .btn {
+          color: #000000;
+          background-color: #c9c9c9;
+          border: 1px solid red;
+        }
+      }
+
+    }
+  }
+
+  .content-sections {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .section-one,
+  .section-two,
+  .section-three,
+  .section-four {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    cursor: pointer;
+    width: 100%;
+    padding: 15px;
+    border-radius: 5px;
+
+    .title {
+      font-weight: 600;
+    }
+  }
+
+  .section-one {
+    background-color: #ABBA3220;
+    color: #5A8651;
+  }
+
+  .section-two {
+    background-color: #FFF1C1;
+    color: #E58D25;
+  }
+
+  .section-three {
+    background-color: #71BBB220;
+    color: #2D978A;
+  }
+
+  .section-four {
+    background-color: #EB87FF20;
+    color: #7B5186;
+  }
+}
+
+// APROVADO
+.company-view {
+  margin-top: 15px;
+  font-size: 17px;
+  line-height: 22px;
+}
