@@ -104,7 +104,7 @@ public class CompanyLinkServiceImpl implements CompanyLinkService {
                 .userId(link.getUser() != null ? link.getUser().getId() : null)
                 .userName(link.getUser() != null ? link.getUser().getName() : null)
                 .companyId(link.getCompany() != null ? link.getCompany().getId() : null)
-                .companyName(link.getCompany() != null ? link.getCompany().getName() : null)
+                .companyName(link.getCompany() != null ? link.getCompany().getCompanyName() : null)
                 .approved(link.getApproved())
                 .roleInCompany(link.getRoleInCompany())
                 .build();

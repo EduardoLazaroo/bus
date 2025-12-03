@@ -20,9 +20,23 @@ export class CompanyActivationComponent {
   pendingCompanies: CompanyDTO[] = [];
 
   company: CompanyDTO = {
-    name: '',
+    companyName: '',
     cnpj: '',
-    address: '',
+    city: '',
+    state: '',
+    country: '',
+    district: '',
+    street: '',
+    phone: '',
+    zipCode: '',
+    number: '',
+    complement: '',
+    email: '',
+    paymentType: '',
+    paymentInfo: '',
+    recipientName: '',
+    mobilePhone: '',
+    unitType: '',
   };
 
   constructor(
@@ -42,7 +56,25 @@ export class CompanyActivationComponent {
   registerCompany() {
     this.companyService.createCompany(this.company).subscribe({
       next: () => {
-        this.company = { name: '', cnpj: '', address: '' };
+        this.company = {
+          companyName: '',
+          cnpj: '',
+          city: '',
+          state: '',
+          country: '',
+          district: '',
+          street: '',
+          phone: '',
+          zipCode: '',
+          number: '',
+          complement: '',
+          email: '',
+          paymentType: '',
+          paymentInfo: '',
+          recipientName: '',
+          mobilePhone: '',
+          unitType: '',
+        };
         this.companyCreated.emit();
       },
     });

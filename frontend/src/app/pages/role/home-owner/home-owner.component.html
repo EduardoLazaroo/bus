@@ -16,7 +16,8 @@
 
 <!-- PENDENTE -->
 <div *ngIf="status === 'PENDING'" class="pending">
-  <h2>Bem vindo, Eduardo</h2>
+  <h2>Bem vindo, {{ userName }}</h2>
+
   <div class="section-main">
     <div class="divider-top">
       <span
@@ -80,7 +81,7 @@
   <p class="label">Empresa ativa</p>
 
   <div class="company-view">
-    <strong>{{ company?.name }}</strong
+    <strong>{{ company?.companyName }}</strong
     ><br />
     <span>{{ company?.cnpj }}</span>
   </div>

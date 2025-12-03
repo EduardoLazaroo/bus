@@ -35,17 +35,31 @@ public class CompanyServiceImpl implements CompanyService {
     public CompanyResponseDTO createCompany(CompanyCreateDTO dto) {
         User owner = SecurityUtils.getCurrentUserOrThrow(userRepository);
 
-        // somente OWNER pode criar empresa
         if (owner.getRole() == null || !owner.getRole().name().equals("OWNER")) {
             throw new BadRequestException("Apenas usuários com role OWNER podem criar empresas");
         }
 
         Company company = Company.builder()
-                .name(dto.getName())
+                .companyName(dto.getCompanyName())
                 .cnpj(dto.getCnpj())
-                .address(dto.getAddress())
+                .country(dto.getCountry())
+                .state(dto.getState())
+                .city(dto.getCity())
+                .district(dto.getDistrict())
+                .street(dto.getStreet())
+                .phone(dto.getPhone())
+                .zipCode(dto.getZipCode())
+                .number(dto.getNumber())
+                .complement(dto.getComplement())
+                .email(dto.getEmail())
+                .paymentType(dto.getPaymentType())
+                .paymentInfo(dto.getPaymentInfo())
+                .recipientName(dto.getRecipientName())
+                .mobilePhone(dto.getMobilePhone())
+                .unitType(dto.getUnitType())
+
+                // padrões do sistema
                 .status(CompanyStatus.PENDING)
-                .active(false)
                 .owner(owner)
                 .build();
 
@@ -67,10 +81,8 @@ public class CompanyServiceImpl implements CompanyService {
 
         if (dto.getApprove() != null && dto.getApprove()) {
             company.setStatus(CompanyStatus.APPROVED);
-            company.setActive(true);
         } else {
             company.setStatus(CompanyStatus.REJECTED);
-            company.setActive(false);
         }
 
         companyRepository.save(company);
@@ -99,10 +111,24 @@ public class CompanyServiceImpl implements CompanyService {
         String ownerName = c.getOwner() != null ? c.getOwner().getName() : null;
         return CompanyResponseDTO.builder()
                 .id(c.getId())
-                .name(c.getName())
+                .companyName(c.getCompanyName())
                 .cnpj(c.getCnpj())
-                .address(c.getAddress())
-                .active(c.getActive())
+                .country(c.getCountry())
+                .state(c.getState())
+                .city(c.getCity())
+                .district(c.getDistrict())
+                .street(c.getStreet())
+                .phone(c.getPhone())
+                .zipCode(c.getZipCode())
+                .number(c.getNumber())
+                .complement(c.getComplement())
+                .email(c.getEmail())
+                .paymentType(c.getPaymentType())
+                .paymentInfo(c.getPaymentInfo())
+                .recipientName(c.getRecipientName())
+                .mobilePhone(c.getMobilePhone())
+                .unitType(c.getUnitType())
+
                 .status(c.getStatus())
                 .ownerId(ownerId)
                 .ownerName(ownerName)

@@ -5,17 +5,34 @@
     <div *ngIf="step === 1" class="step">
       <h2>Cadastro da Empresa</h2>
 
+      <!-- Nome da Empresa -->
       <label>Nome da Empresa</label>
-      <input type="text" [(ngModel)]="company.name" name="name" required />
+      <input
+        type="text"
+        [(ngModel)]="company.companyName"
+        name="companyName"
+        required
+      />
 
+      <!-- CNPJ -->
       <label>CNPJ</label>
       <input type="text" [(ngModel)]="company.cnpj" name="cnpj" required />
 
-      <label>Endereço</label>
+      <!-- Tipo de Unidade -->
+      <label>Tipo de Unidade</label>
       <input
         type="text"
-        [(ngModel)]="company.address"
-        name="address"
+        [(ngModel)]="company.unitType"
+        name="unitType"
+        required
+      />
+
+      <!-- CEP -->
+      <label>CEP</label>
+      <input
+        type="text"
+        [(ngModel)]="company.zipCode"
+        name="zipCode"
         required
       />
 
@@ -48,9 +65,9 @@
   </p>
 
   <div *ngFor="let comp of pendingCompanies" class="company-card">
-    <strong>{{ comp.name }}</strong>
+    <strong>{{ comp.companyName }}</strong>
     <p>CNPJ: {{ comp.cnpj }}</p>
-    <p>{{ comp.address }}</p>
+    <p>{{ comp.city }} – {{ comp.state }}</p>
 
     <div class="row-btns">
       <button class="btn-primary small" (click)="approve(comp.id!, true)">

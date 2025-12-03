@@ -5,6 +5,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { CompanyService } from '../../../core/services/company.service';
 import { CompanyActivationComponent } from '../company-activation/company-activation.component';
 import { CompanyDTO } from '../../../core/models/company.model';
+import { Observable } from 'rxjs';
 
 type CompanyStatus = 'NO_COMPANY' | 'PENDING' | 'APPROVED' | 'REJECTED';
 
@@ -19,6 +20,7 @@ export class HomeOwnerComponent implements OnInit {
   userRole = this.authService.getUserRole();
   company: CompanyDTO | null = null;
   status: CompanyStatus = 'NO_COMPANY'; // estado inicial padrão
+  userName: string | null = null;
 
   constructor(
     private authService: AuthService,
@@ -28,6 +30,10 @@ export class HomeOwnerComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCompanyStatus();
+    this.authService.getCurrentUser().subscribe({
+      next: (user) => (this.userName = user.name),
+      error: () => (this.userName = null),
+    });
   }
 
   loadCompanyStatus() {

@@ -12,9 +12,9 @@
   <h2>Solicitações de Empresa</h2>
 
   <div *ngFor="let comp of pendingCompanies" class="company-card">
-    <p><strong>Nome:</strong> {{ comp.name }}</p>
+    <p><strong>Nome:</strong> {{ comp.companyName }}</p>
     <p><strong>CNPJ:</strong> {{ comp.cnpj }}</p>
-    <p><strong>Endereço:</strong> {{ comp.address }}</p>
+    <p><strong>Endereço:</strong> {{ comp.city }}</p>
 
     <button (click)="approve(comp.id!, true)">Aprovar</button>
     <button (click)="approve(comp.id!, false)" class="reject-btn">Reprovar</button>

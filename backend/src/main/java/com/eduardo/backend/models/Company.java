@@ -18,13 +18,28 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-
+    private String companyName;
     private String cnpj;
 
-    private String address;
+    private String country;
+    private String state;
+    private String city;
+    private String district;      // bairro
+    private String street;
+    private String number;
+    private String complement;
+    private String zipCode;
 
-    private Boolean active = false;
+    private String phone;
+    private String mobilePhone;
+    private String email;
+
+    private String paymentType;
+    private String paymentInfo;
+
+    private String recipientName; // destinatário
+    private String unitType;      // tipo unidade
+
 
     @Enumerated(EnumType.STRING)
     private CompanyStatus status = CompanyStatus.PENDING;
