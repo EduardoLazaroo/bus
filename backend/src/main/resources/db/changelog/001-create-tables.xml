@@ -15,6 +15,13 @@
             </column>
             <column name="password" type="VARCHAR(255)"/>
             <column name="role" type="VARCHAR(50)"/>
+            <column name="phone" type="VARCHAR(20)"/>
+            <column name="profile_image" type="VARCHAR(500)"/>
+            <column name="cep" type="VARCHAR(15)"/>
+            <column name="logradouro" type="VARCHAR(255)"/>
+            <column name="bairro" type="VARCHAR(255)"/>
+            <column name="complemento" type="VARCHAR(255)"/>
+            <column name="numero" type="VARCHAR(20)"/>
         </createTable>
 
         <createTable tableName="companies">

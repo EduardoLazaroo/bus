@@ -32,6 +32,15 @@ public class UserController {
         return ResponseEntity.ok(userDTO);
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<UserDTO> updateUser(
+            @RequestAttribute("email") String email,
+            @RequestBody UserDTO updateRequest
+    ) {
+        UserDTO updated = userService.updateUser(email, updateRequest);
+        return ResponseEntity.ok(updated);
+    }
+
     @GetMapping("/me")
     public ResponseEntity<UserDTO> getCurrentUser(@RequestAttribute("email") String email) {
         return userRepository.findByEmail(email)
