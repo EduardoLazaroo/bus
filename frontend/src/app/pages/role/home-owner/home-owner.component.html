@@ -38,8 +38,8 @@
         </div>
       </div>
       <div class="content-buttons">
-        <button class="btn">Configuração avançada</button>
-        <button class="btn">Liberar acesso</button>
+        <button class="btn" *ngIf="!isAdvancedConfig" (click)="goToAdvancedConf()">Configuração avançada</button>
+        <button class="btn">Solicitar acesso</button>
       </div>
     </div>
   </div>

@@ -25,7 +25,7 @@ public class CompanyServiceImpl implements CompanyService {
     private final UserRepository userRepository;
 
     public CompanyServiceImpl(CompanyRepository companyRepository,
-                              UserRepository userRepository) {
+            UserRepository userRepository) {
         this.companyRepository = companyRepository;
         this.userRepository = userRepository;
     }
@@ -68,6 +68,39 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    @Transactional
+    public CompanyResponseDTO updateCompany(Long companyId, CompanyCreateDTO dto) {
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Company não encontrada"));
+
+        User owner = SecurityUtils.getCurrentUserOrThrow(userRepository);
+        if (!company.getOwner().getId().equals(owner.getId())) {
+            throw new BadRequestException("Usuário não autorizado a atualizar esta empresa");
+        }
+
+        company.setCompanyName(dto.getCompanyName());
+        company.setCnpj(dto.getCnpj());
+        company.setCountry(dto.getCountry());
+        company.setState(dto.getState());
+        company.setCity(dto.getCity());
+        company.setDistrict(dto.getDistrict());
+        company.setStreet(dto.getStreet());
+        company.setPhone(dto.getPhone());
+        company.setZipCode(dto.getZipCode());
+        company.setNumber(dto.getNumber());
+        company.setComplement(dto.getComplement());
+        company.setEmail(dto.getEmail());
+        company.setPaymentType(dto.getPaymentType());
+        company.setPaymentInfo(dto.getPaymentInfo());
+        company.setRecipientName(dto.getRecipientName());
+        company.setMobilePhone(dto.getMobilePhone());
+        company.setUnitType(dto.getUnitType());
+
+        companyRepository.save(company);
+        return mapToDTO(company);
+    }
+
+    @Override
     public List<CompanyResponseDTO> getPendingCompanies() {
         List<Company> list = companyRepository.findByStatus(CompanyStatus.PENDING);
         return list.stream().map(this::mapToDTO).collect(Collectors.toList());
@@ -90,13 +123,6 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public CompanyResponseDTO getCompany(Long companyId) {
-        Company company = companyRepository.findById(companyId)
-                .orElseThrow(() -> new ResourceNotFoundException("Company não encontrada"));
-        return mapToDTO(company);
-    }
-
-    @Override
     public List<CompanyResponseDTO> getCompaniesByOwner() {
         User owner = SecurityUtils.getCurrentUserOrThrow(userRepository);
         List<Company> companies = companyRepository.findAll()
@@ -104,6 +130,13 @@ public class CompanyServiceImpl implements CompanyService {
                 .filter(c -> c.getOwner() != null && c.getOwner().getId().equals(owner.getId()))
                 .collect(Collectors.toList());
         return companies.stream().map(this::mapToDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public CompanyResponseDTO getCompany(Long companyId) {
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Company não encontrada"));
+        return mapToDTO(company);
     }
 
     private CompanyResponseDTO mapToDTO(Company c) {

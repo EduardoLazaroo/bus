@@ -17,7 +17,7 @@ export class AuthService {
 
   register(user: UserDTO): Observable<UserDTO> {
     return this.http.post<UserDTO>(`${this.apiUrl}/register`, user).pipe(
-      tap(user => {
+      tap((user) => {
         this.currentUser = user;
         localStorage.setItem('user', JSON.stringify(user));
         if (user.token) localStorage.setItem('token', user.token);
@@ -26,35 +26,32 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<UserDTO> {
-    return this.http.post<UserDTO>(`${this.apiUrl}/login`, { email, password }).pipe(
-      tap(user => {
-        this.currentUser = user;
-        localStorage.setItem('user', JSON.stringify(user));
-        if (user.token) localStorage.setItem('token', user.token);
-      })
-    );
+    return this.http
+      .post<UserDTO>(`${this.apiUrl}/login`, { email, password })
+      .pipe(
+        tap((user) => {
+          this.currentUser = user;
+          localStorage.setItem('user', JSON.stringify(user));
+          if (user.token) localStorage.setItem('token', user.token);
+        })
+      );
   }
 
   getCurrentUser(): Observable<UserDTO> {
     return this.http.get<UserDTO>(`${this.apiUrl}/me`);
   }
 
-  logout() {
-    this.currentUser = null;
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-  }
-
   getUserRole(): UserRole | null {
     return this.currentUser?.role ?? null;
   }
 
-  isLoggedIn(): boolean {
-    return !!this.currentUser;
+  getUserName(): string | null {
+    return this.currentUser?.name ?? null;
   }
 
-  hasAnyRole(roles: UserRole[]): boolean {
-    const role = this.getUserRole();
-    return role ? roles.includes(role) : false;
+  logout() {
+    this.currentUser = null;
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
   }
 }

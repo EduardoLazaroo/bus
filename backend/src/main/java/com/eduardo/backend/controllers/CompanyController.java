@@ -23,9 +23,21 @@ public class CompanyController {
     // OWNER cria company (fica PENDING)
     @PostMapping
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<CompanyResponseDTO> createCompany(@RequestBody CompanyCreateDTO dto) {
+    public ResponseEntity<CompanyResponseDTO> createCompany(
+            @RequestBody CompanyCreateDTO dto
+    ) {
         CompanyResponseDTO response = companyService.createCompany(dto);
         return ResponseEntity.ok(response);
+    }
+
+    // OWNER atualiza empresa (PUT)
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('OWNER')")
+    public ResponseEntity<CompanyResponseDTO> update(
+            @PathVariable Long id,
+            @RequestBody CompanyCreateDTO dto
+    ) {
+        return ResponseEntity.ok(companyService.updateCompany(id, dto));
     }
 
     // ADMIN vê companies pendentes
@@ -38,8 +50,10 @@ public class CompanyController {
     // ADMIN aprova/rejeita
     @PutMapping("/{companyId}/approve")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<CompanyResponseDTO> approveCompany(@PathVariable Long companyId,
-                                                             @RequestBody CompanyApproveDTO dto) {
+    public ResponseEntity<CompanyResponseDTO> approveCompany(
+            @PathVariable Long companyId,
+            @RequestBody CompanyApproveDTO dto
+    ) {
         CompanyResponseDTO response = companyService.approveOrRejectCompany(companyId, dto);
         return ResponseEntity.ok(response);
     }
@@ -51,6 +65,7 @@ public class CompanyController {
         return ResponseEntity.ok(companyService.getCompaniesByOwner());
     }
 
+    // qualquer usuário autenticado busca por ID
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CompanyResponseDTO> getCompany(@PathVariable Long id) {

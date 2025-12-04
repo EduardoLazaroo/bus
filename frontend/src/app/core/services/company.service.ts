@@ -14,6 +14,11 @@ export class CompanyService {
     return this.http.post<CompanyDTO>(`${this.apiUrl}`, data);
   }
 
+  // OWNER ATUALIZA EMPRESA JÁ EXISTENTE
+  updateCompany(id: number, data: CompanyDTO): Observable<CompanyDTO> {
+    return this.http.put<CompanyDTO>(`${this.apiUrl}/${id}`, data);
+  }
+
   // ADMIN busca pendentes
   getPendingCompanies(): Observable<CompanyDTO[]> {
     return this.http.get<CompanyDTO[]>(`${this.apiUrl}/pending`);

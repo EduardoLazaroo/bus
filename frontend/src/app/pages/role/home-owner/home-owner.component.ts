@@ -21,19 +21,23 @@ export class HomeOwnerComponent implements OnInit {
   company: CompanyDTO | null = null;
   status: CompanyStatus = 'NO_COMPANY'; // estado inicial padrão
   userName: string | null = null;
+  isAdvancedConfig: boolean = false;
 
   constructor(
     private authService: AuthService,
     private companyService: CompanyService,
     private router: Router
-  ) {}
+  ) {
+    this.userRole = this.authService.getUserRole();
+    this.userName = this.authService.getUserName();
+  }
 
   ngOnInit(): void {
     this.loadCompanyStatus();
-    this.authService.getCurrentUser().subscribe({
-      next: (user) => (this.userName = user.name),
-      error: () => (this.userName = null),
-    });
+  }
+
+  goToAdvancedConf(){
+    this.router.navigate(['/final-registration-owner']);
   }
 
   loadCompanyStatus() {
