@@ -25,6 +25,19 @@ export class AuthService {
     );
   }
 
+  updateUser(data: Partial<UserDTO>): Observable<UserDTO> {
+  return this.http.put<UserDTO>(`${this.apiUrl}/update`, data).pipe(
+    tap((updatedUser) => {
+      this.currentUser = {
+        ...this.currentUser,
+        ...updatedUser
+      };
+
+      localStorage.setItem('user', JSON.stringify(this.currentUser));
+    })
+  );
+}
+
   login(email: string, password: string): Observable<UserDTO> {
     return this.http
       .post<UserDTO>(`${this.apiUrl}/login`, { email, password })

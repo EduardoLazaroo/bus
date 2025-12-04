@@ -59,26 +59,40 @@ public class UserServiceImpl implements UserService {
         dto.setEmail(user.getEmail());
         dto.setRole(user.getRole());
         dto.setPassword(null); // não retornar a senha
-        dto.setToken(token);   // retorna o token
+        dto.setToken(token); // retorna o token
 
         return dto;
     }
 
     @Override
     public UserDTO updateUser(String email, UserDTO updateRequest) {
-
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        // Atualizar somente os campos enviados
-        if (updateRequest.getName() != null) user.setName(updateRequest.getName());
-        if (updateRequest.getPhone() != null) user.setPhone(updateRequest.getPhone());
-        if (updateRequest.getProfileImage() != null) user.setProfileImage(updateRequest.getProfileImage());
-        if (updateRequest.getCep() != null) user.setCep(updateRequest.getCep());
-        if (updateRequest.getLogradouro() != null) user.setLogradouro(updateRequest.getLogradouro());
-        if (updateRequest.getBairro() != null) user.setBairro(updateRequest.getBairro());
-        if (updateRequest.getComplemento() != null) user.setComplemento(updateRequest.getComplemento());
-        if (updateRequest.getNumero() != null) user.setNumero(updateRequest.getNumero());
+        if (updateRequest.getName() != null)
+            user.setName(updateRequest.getName());
+        if (updateRequest.getPhone() != null)
+            user.setPhone(updateRequest.getPhone());
+        if (updateRequest.getProfileImage() != null)
+            user.setProfileImage(updateRequest.getProfileImage());
+        if (updateRequest.getCep() != null)
+            user.setCep(updateRequest.getCep());
+        if (updateRequest.getLogradouro() != null)
+            user.setLogradouro(updateRequest.getLogradouro());
+        if (updateRequest.getBairro() != null)
+            user.setBairro(updateRequest.getBairro());
+        if (updateRequest.getComplemento() != null)
+            user.setComplemento(updateRequest.getComplemento());
+        if (updateRequest.getNumero() != null)
+            user.setNumero(updateRequest.getNumero());
+
+        // ✅ ATUALIZA SENHA COM SEGURANÇA
+        if (updateRequest.getPassword() != null && !updateRequest.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(updateRequest.getPassword()));
+        }
+
+        // ❌ BLOQUEIA ATUALIZAÇÃO DE ROLE VIA API
+        user.setRole(user.getRole());
 
         userRepository.save(user);
 

@@ -3,14 +3,30 @@
   <span>Passo 1 de 3</span>
   <h2>DADOS GERAIS DOS USUÁRIOS</h2>
 
-  <label>Email</label>
-  <input type="text" name="name" />
+  <label>Nome</label>
+  <input type="text" [(ngModel)]="user.name" name="name" />
 
-  <label>Telefone</label>
-  <input type="text" name="phone" />
+  <label>Celular/whatsapp</label>
+  <input type="text" [(ngModel)]="user.phone" name="phone" />
 
-  <button type="button" class="btn-primary" (click)="step = 2">
-    Próximo →
+  <span>Endereço</span>
+  <label>CEP</label>
+  <input type="text"  [(ngModel)]="user.cep" name="zipCode" />
+
+  <label>Logradouro</label>
+  <input type="text" [(ngModel)]="user.logradouro" name="logradouro" />
+
+  <label>Bairro</label>
+  <input type="text" [(ngModel)]="user.bairro" name="bairro" />
+
+  <label>Complemento</label>
+  <input type="text" [(ngModel)]="user.complemento" name="complemento" />
+
+  <label>Número</label>
+  <input type="text" [(ngModel)]="user.numero" name="numero" />
+
+  <button type="button" class="btn-primary" (click)="updateUser()">
+    Salvar Dados do Usuário ✅
   </button>
 </div>
 

@@ -17,7 +17,12 @@ export class FinalRegistrationOwnerComponent implements OnInit {
   userRole: string | null = null;
   step: number = 1;
 
-  user: UserDTO = { name: '', email: '', password: '', role: 'CLIENT' };
+  user: UserDTO = {
+    name: '',
+    email: '',
+    password: '',
+    role: 'CLIENT',
+  };
 
   company: CompanyDTO = {
     id: 0,
@@ -49,15 +54,35 @@ export class FinalRegistrationOwnerComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.authService.getCurrentUser().subscribe({
+      next: (user) => {
+        this.user = user;
+      },
+      error: (err) => console.error('Erro ao carregar usuário', err),
+    });
+
     this.companyService.getCompaniesByOwner().subscribe({
       next: (companies) => {
         if (companies.length > 0) {
-          this.company = companies[0]; // ✅ automaticamente preenche os inputs
+          this.company = companies[0]; // automaticamente preenche os inputs
         } else {
           console.error('Nenhuma empresa encontrada para este usuário.');
         }
       },
       error: (err) => console.error('Erro ao buscar empresa', err),
+    });
+  }
+
+  updateUser() {
+    this.authService.updateUser(this.user).subscribe({
+      next: (res) => {
+        console.log('Usuário atualizado com sucesso', res);
+        this.step = 2;
+      },
+      error: (err) => {
+        console.error('Erro ao atualizar usuário', err);
+        alert('Erro ao atualizar usuário');
+      },
     });
   }
 
@@ -70,7 +95,7 @@ export class FinalRegistrationOwnerComponent implements OnInit {
     this.companyService.updateCompany(this.company.id, this.company).subscribe({
       next: (res) => {
         console.log('Empresa atualizada com sucesso', res);
-        alert('Empresa atualizada com sucesso!');
+        this.router.navigate(['/home-owner']);
       },
       error: (err) => {
         console.error('Erro ao atualizar empresa', err);
