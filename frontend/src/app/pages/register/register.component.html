@@ -1,26 +1,69 @@
-<div class="auth-container">
-  <h2>Criar Conta</h2>
+<div class="content-centralize">
+  <div class="auth-container">
+    <div class="login-header">
+      <img src="assets/imgs/logo.png" alt="Logo" />
+      <h2>BusCompany</h2>
+    </div>
 
-  <form (ngSubmit)="register()" #userForm="ngForm">
-    <input type="text" placeholder="Nome" [(ngModel)]="user.name" name="name" required />
-    <input type="email" placeholder="Email" [(ngModel)]="user.email" name="email" required />
-    <input type="password" placeholder="Senha" [(ngModel)]="user.password" name="password" required />
+    <form (ngSubmit)="register()" #userForm="ngForm">
+      <div class="input-group">
+        <label>Nome</label>
+        <input
+          type="text"
+          placeholder="Nome"
+          [(ngModel)]="user.name"
+          name="name"
+          required
+        />
+      </div>
 
-    <select [(ngModel)]="user.role" name="role">
-      <option value="USER">USER</option>
-      <option value="ADMIN">ADMIN</option>
-      <option value="DRIVER">DRIVER</option>
-      <option value="OWNER">OWNER</option>
-    </select>
+      <div class="input-group">
+        <label>Email</label>
+        <input
+          type="email"
+          placeholder="Email"
+          [(ngModel)]="user.email"
+          name="email"
+          required
+        />
+      </div>
 
-    <button type="submit" [disabled]="userForm.invalid">Cadastrar</button>
-  </form>
+      <div class="input-group">
+        <label>Senha</label>
+        <input
+          type="password"
+          placeholder="Senha"
+          [(ngModel)]="user.password"
+          name="password"
+          required
+        />
+      </div>
 
-  <p *ngIf="successMessage" class="success">{{ successMessage }}</p>
-  <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+      <div class="input-group">
+        <label>Role</label>
+        <select [(ngModel)]="user.role" name="role">
+          <option value="USER">USER</option>
+          <option value="ADMIN">ADMIN</option>
+          <option value="DRIVER">DRIVER</option>
+          <option value="OWNER">OWNER</option>
+        </select>
+      </div>
 
-  <p class="switch">
-    Já tem conta?
-    <a (click)="goToLogin()">Faça login</a>
-  </p>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="userForm.invalid"
+      >
+        Cadastrar
+      </button>
+    </form>
+
+    <p *ngIf="successMessage" class="success">{{ successMessage }}</p>
+    <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+
+    <p class="notAccount">
+      Já tem conta?
+      <a (click)="goToLogin()">Faça login</a>
+    </p>
+  </div>
 </div>

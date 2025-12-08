@@ -1,73 +1,53 @@
-.auth-container,
-.home-container {
-  width: 100%;
-  max-width: 400px;
-  margin: 100px auto;
-  padding: 2rem;
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  text-align: center;
+.content-centralize {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 
-  h2 {
-    margin-bottom: 1.5rem;
-    color: #333;
-  }
+  .auth-container {
+    width: 100%;
+    padding: 2rem;
 
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+    .login-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
 
-    input,
-    select {
-      padding: 0.8rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 1rem;
-      outline: none;
-      transition: 0.2s;
+      img {
+        width: 162px;
+        height: auto;
+        margin-bottom: 0.5rem;
+      }
 
-      &:focus {
-        border-color: #007bff;
+      h2 {
+        margin-bottom: 1.5rem;
+        color: #27445D;
+        font-size: 32px;
+        font-weight: bold;
       }
     }
 
-    button {
-      background: #007bff;
-      color: white;
-      padding: 0.8rem;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 500;
-      transition: 0.2s;
+    .btn-primary {
+      width: 100%;
+      height: 55px;
+      margin-bottom: 1.5rem;
+    }
 
-      &:hover {
-        background: #0056b3;
+    .notAccount {
+      display: flex;
+      flex-direction: row;
+      gap: 5px;
+
+      a {
+        color: var(--seccondary-color);
+        font-weight: 600;
+        text-decoration: none;
       }
     }
-  }
 
-  .switch {
-    margin-top: 1rem;
-    a {
-      color: #007bff;
-      cursor: pointer;
-      text-decoration: none;
-      &:hover {
-        text-decoration: underline;
-      }
+    .error {
+      color: red;
+      margin-top: 10px;
     }
-  }
-
-  .error {
-    color: red;
-    margin-top: 10px;
-  }
-
-  .success {
-    color: green;
-    margin-top: 10px;
   }
 }
