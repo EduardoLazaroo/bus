@@ -5,14 +5,14 @@ import { AuthService } from '../../../core/services/auth.service';
 import { CompanyService } from '../../../core/services/company.service';
 import { CompanyActivationComponent } from '../company-activation/company-activation.component';
 import { CompanyDTO } from '../../../core/models/company.model';
-import { Observable } from 'rxjs';
+import { Navbar } from '../../navbar/navbar.component';
 
 type CompanyStatus = 'NO_COMPANY' | 'PENDING' | 'APPROVED' | 'REJECTED';
 
 @Component({
   selector: 'app-home-owner',
   standalone: true,
-  imports: [CommonModule, CompanyActivationComponent],
+  imports: [CommonModule, CompanyActivationComponent, Navbar],
   templateUrl: './home-owner.component.html',
   styleUrls: ['./home-owner.component.scss'],
 })

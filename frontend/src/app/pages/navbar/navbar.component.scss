@@ -1,0 +1,53 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: 10px 20px;
+
+  .navbar-left {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+
+    .navbar-logo {
+      height: 40px;
+      cursor: pointer;
+    }
+
+    .navbar-brand {
+      font-size: 24px;
+      font-weight: bold;
+      color: #27445D;
+      cursor: pointer;
+    }
+  }
+
+  .navbar-right {
+    display: flex;
+    gap: 5px;
+
+    .info-account {
+      display: flex;
+      flex-direction: column;
+      font-size: 12px;
+      gap: 5px;
+
+      color: #27445D;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .user-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      img {
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+      }
+    }
+  }
+}

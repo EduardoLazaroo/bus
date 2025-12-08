@@ -2,8 +2,29 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  .content-final-register{
-    padding: 32px;
 
+  .content-final-register {
+        padding: 12px 32px;
+
+    .centralize {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 16px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    h4.tags {
+      font-size: 14px;
+      font-weight: 600;
+      color: #555;
+      margin-top: 24px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .input-group {
+      margin-bottom: 5px;
+    }
   }
 }

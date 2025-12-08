@@ -40,6 +40,12 @@ body {
   background: var(--primary-color-hover);
 }
 
+.btn-back {
+  background: #ECECEC;
+  color: #898989;
+  border: 2px solid #898989;
+}
+
 .btn-primary-outline {
   background: transparent;
   color: var(--primary-color);
