@@ -8,11 +8,13 @@ import { HomeOwnerComponent } from './pages/role/home-owner/home-owner.component
 import { HomeAdminComponent } from './pages/role/home-admin/home-admin.component';
 import { HomeDriverComponent } from './pages/role/home-driver/home-driver.component';
 import { FinalRegistrationOwnerComponent } from './pages/role/final-registration-owner/final-registration-owner.component';
+import { ProfileComponent } from './pages/profile/profile.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
+  { path: 'profile', component: ProfileComponent },
 
   // CLIENT
   {

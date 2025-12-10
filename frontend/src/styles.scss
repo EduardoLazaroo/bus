@@ -31,6 +31,12 @@ body {
   transition: background 0.2s ease, transform 0.1s ease;
 }
 
+.btn-back {
+  background: #ECECEC;
+  color: #898989;
+  border: 2px solid #898989;
+}
+
 .btn-primary {
   background: var(--primary-color);
   color: #fff;
@@ -40,10 +46,19 @@ body {
   background: var(--primary-color-hover);
 }
 
-.btn-back {
-  background: #ECECEC;
-  color: #898989;
-  border: 2px solid #898989;
+.btn-cancel {
+  background: #FF6B6B;
+  color: #fff;
+}
+
+.btn-cancel:hover {
+  background: #e05555;
+}
+
+.btn-disabled {
+  background-color: #606060;
+  color: white;
+  cursor: not-allowed;
 }
 
 .btn-primary-outline {
@@ -150,4 +165,8 @@ label {
   padding: 12px 15px;
   text-align: left;
   border-bottom: 1px solid #ddd;
+}
+
+.comp-with-nav {
+  height: calc(100vh - 60px);
 }

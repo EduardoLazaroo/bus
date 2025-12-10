@@ -1,89 +1,155 @@
 <app-navbar></app-navbar>
-<button class="btn-back" (click)="logout()">⟵ Sair</button>
+<div class="comp-with-nav">
+  <!-- SEM EMPRESA -->
+  <div *ngIf="status === 'NO_COMPANY'" class="no-company">
+    <app-company-activation
+      (companyCreated)="companyCreated()"
+    ></app-company-activation>
+  </div>
 
-<!-- SEM EMPRESA -->
-<div *ngIf="status === 'NO_COMPANY'" class="no-company">
-  <app-company-activation
-    (companyCreated)="companyCreated()"
-  ></app-company-activation>
-</div>
+  <!-- REJEITADO -->
+  <div *ngIf="status === 'REJECTED'" class="card">
+    <h2>Cadastro Rejeitado</h2>
+    <p>Entre em contato para prosseguir com nova tentativa.</p>
+    <button class="btn-secondary">Entrar em contato</button>
+  </div>
 
-<!-- REJEITADO -->
-<div *ngIf="status === 'REJECTED'" class="card">
-  <h2>Cadastro Rejeitado</h2>
-  <p>Entre em contato para prosseguir com nova tentativa.</p>
-  <button class="btn-secondary">Entrar em contato</button>
-</div>
+  <!-- PENDENTE -->
+  <div *ngIf="status === 'PENDING'" class="pending">
+    <h2>Bem vindo, {{ userName }}</h2>
 
-<!-- PENDENTE -->
-<div *ngIf="status === 'PENDING'" class="pending">
-  <h2>Bem vindo, {{ userName }}</h2>
-
-  <div class="section-main">
-    <div class="divider-top">
-      <span
-        >Entraremos em contato com você. Para utilizar nosso serviço ainda
-        faltam etapas</span
-      >
-      <img
-        src="../../../../assets/imgs/telecommuting.png"
-        class="img-register"
-      />
-    </div>
-    <div class="divider-bottom">
-      <div class="notice">
-        <span>Depois que finalizar, já pode usar!</span>
-        <div class="status">
-          <span>o</span>
-          <span>Pendente</span>
+    <div class="section-main">
+      <div class="divider-top">
+        <span
+          >Entraremos em contato com você. Para utilizar nosso serviço ainda
+          faltam etapas</span
+        >
+        <img
+          src="../../../../assets/imgs/telecommuting.png"
+          class="img-register"
+        />
+      </div>
+      <div class="divider-bottom">
+        <div class="notice">
+          <span>Depois que finalizar, já pode usar!</span>
+          <div class="status">
+            <span>o</span>
+            <span>Pendente</span>
+          </div>
+        </div>
+        <div class="content-buttons">
+          <button
+            class="btn"
+            *ngIf="!isAdvancedConfig"
+            (click)="goToAdvancedConf()"
+          >
+            Configuração avançada
+          </button>
+          <button class="btn">Solicitar acesso</button>
         </div>
       </div>
-      <div class="content-buttons">
-        <button class="btn" *ngIf="!isAdvancedConfig" (click)="goToAdvancedConf()">Configuração avançada</button>
-        <button class="btn">Solicitar acesso</button>
+    </div>
+
+    <div class="content-sections">
+      <span>Serviços que terá direito</span>
+      <div class="section-one">
+        <span class="title">Finaceiro</span>
+        <span>Controle facilmente o pagamento de mensalidades.</span>
+        <span>Acompanhe suas finanças.</span>
+        <span>Consulte o extrato financeiro.</span>
+      </div>
+      <div class="section-two">
+        <span class="title">Rotas</span>
+        <span>Acompanhar em tempo real.</span>
+        <span>Gerar mapa</span>
+        <span>Flexibilidade que você precisa para criar suas rotas.</span>
+      </div>
+      <div class="section-three">
+        <span class="title">Gestão</span>
+        <span>Controle de passageiros</span>
+        <span>Confirmação de embarque</span>
+        <span>Avisos importantes</span>
+        <span>Enquetes</span>
+      </div>
+      <div class="section-four">
+        <span class="title">Tudo na palma da mão</span>
+        <span
+          >Tenha a gestão do seu transporte escolar na mão, de forma simples,
+          rápida e de onde quiser</span
+        >
       </div>
     </div>
   </div>
 
-  <div class="content-sections">
-    <span>Serviços que terá direito</span>
-    <div class="section-one">
-      <span class="title">Finaceiro</span>
-      <span>Controle facilmente o pagamento de mensalidades.</span>
-      <span>Acompanhe suas finanças.</span>
-      <span>Consulte o extrato financeiro.</span>
+  <!-- APROVADO -->
+  <div *ngIf="status === 'APPROVED'" class="approved">
+    <h2>Bem vindo, {{ userName }}</h2>
+    <div>
+      <span>Você faz parta do(a) </span
+      ><strong>{{ company?.companyName }}</strong>
     </div>
-    <div class="section-two">
-      <span class="title">Rotas</span>
-      <span>Acompanhar em tempo real.</span>
-      <span>Gerar mapa</span>
-      <span>Flexibilidade que você precisa para criar suas rotas.</span>
-    </div>
-    <div class="section-three">
-      <span class="title">Gestão</span>
-      <span>Controle de passageiros</span>
-      <span>Confirmação de embarque</span>
-      <span>Avisos importantes</span>
-      <span>Enquetes</span>
-    </div>
-    <div class="section-four">
-      <span class="title">Tudo na palma da mão</span>
-      <span
-        >Tenha a gestão do seu transporte escolar na mão, de forma simples,
-        rápida e de onde quiser</span
-      >
-    </div>
-  </div>
-</div>
 
-<!-- APROVADO -->
-<div *ngIf="status === 'APPROVED'" class="box">
-  <h1>Bem-vindo!</h1>
-  <p class="label">Empresa ativa</p>
+    <div class="section-main">
+      <div class="divider-top">
+        <span
+          >Sua empresa já adquiriu nossos serviços! Agora, é hora de criar suas
+          jornadas, definir os responsáveis e adicionar os usuários.
+        </span>
+        <img
+          src="../../../../assets/imgs/company-active.png"
+          class="img-register"
+        />
+      </div>
+    </div>
 
-  <div class="company-view">
-    <strong>{{ company?.companyName }}</strong
-    ><br />
-    <span>{{ company?.cnpj }}</span>
+    <div class="cards-completly">
+      <div class="head-cards">
+        <span>Você esta aqui</span>
+        <div class="line-conjunto">
+          <div class="conjunto">
+            <span>-</span>
+            <span>O</span>
+          </div>
+          <div class="conjunto">
+            <span>-</span>
+            <span>O</span>
+          </div>
+          <div class="conjunto">
+            <span>-</span>
+            <span>O</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-one">
+        <div class="left left-able">
+          <img src="assets/imgs/mini-bus.png" alt="mini onibus" />
+          <span class="title">Cadastrar Veículo</span>
+          <span>Cadastro de veiculo, tenha em mãos todos documentos</span>
+        </div>
+        <div class="right right-able"></div>
+      </div>
+      <div class="card-two">
+        <div class="left left-able">
+          <img src="assets/imgs/mini-user.png" alt="mini onibus" />
+          <span class="title">Adicionar cliente</span>
+          <span>Pelo menos um cliente para partiipar do transporte</span>
+        </div>
+        <div class="right right-able"></div>
+      </div>
+      <div class="card-three">
+        <div class="left left-disable">
+          <img src="assets/imgs/mini-driver.png" alt="mini onibus" />
+          <span class="title">Vincular motorista</span>
+          <span>Cadastre os motoristas que vão dirigir os veículos</span>
+        </div>
+        <div class="right right-disable"></div>
+      </div>
+    </div>
+
+    <div class="create-journey">
+      <span class="title">Minha primeira jornada!</span>
+      <span>Finalize os cadastros acima e crie sua jornada!</span>
+      <button class="btn btn-disabled">Criar jornada!</button>
+    </div>
   </div>
 </div>

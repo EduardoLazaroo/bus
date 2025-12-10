@@ -11,11 +11,11 @@
 }
 
 .card {
+  text-align: center;
   width: 430px;
   background: #fff;
   padding: 28px;
   border-radius: 14px;
-  text-align: center;
   box-shadow: 0 0 12px #00000014;
 }
 
@@ -47,12 +47,12 @@
 
 
 // PENDENTE
-.pending {
+.pending,
+.approved {
   display: flex;
   flex-direction: column;
-  // align-items: flex-start;
   gap: 1rem;
-  padding: 32px;
+  padding: 12px 32px;
 
   h2 {
     font-size: 2rem;
@@ -72,7 +72,7 @@
       background-color: #27445d20;
       align-items: center;
       border-radius: 5px;
-      color: #000000;
+      color: #2b2b2b;
       font-weight: 600;
     }
 
@@ -91,6 +91,7 @@
 
         .status {
           display: flex;
+          align-items: center;
           gap: 5px;
           background-color: #FFC1C1;
           color: red;
@@ -106,9 +107,12 @@
         gap: 5px;
 
         .btn {
-          color: #000000;
+          width: 50%;
+          height: -webkit-fill-available;
+          color: #2b2b2b;
+          font-weight: 500;
           background-color: #c9c9c9;
-          border: 1px solid red;
+          border: 1px solid #ff000060;
         }
       }
 
@@ -133,9 +137,11 @@
     width: 100%;
     padding: 15px;
     border-radius: 5px;
+    font-size: 14px;
 
     .title {
       font-weight: 600;
+      font-size: 16px;
     }
   }
 
@@ -160,9 +166,91 @@
   }
 }
 
-// APROVADO
-.company-view {
-  margin-top: 15px;
-  font-size: 17px;
-  line-height: 22px;
+// APPROVED
+.approved {
+  .cards-completly {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background-color: white;
+    padding: 12px;
+    border-radius: 5px;
+    box-shadow: 0px 3px 3px 1px gray;
+
+
+    .head-cards {
+      width: 100%;
+
+      .line-conjunto {
+        display: flex;
+        gap: 5px;
+      }
+    }
+
+    .card-one,
+    .card-two,
+    .card-three {
+      background-color: #f3f4f6;
+      border-radius: 10px;
+      width: 100%;
+      display: flex;
+      box-shadow: 0px 1px 3px 1px gray;
+
+      .left {
+        display: flex;
+        align-items: center;
+        width: calc(100% - 40px);
+        border-radius: 5px 0px 0px 5px;
+        flex-direction: column;
+        gap: 5px;
+        padding: 12px;
+
+        .title {
+          font-size: 16px;
+          font-weight: 700;
+        }
+
+        img {
+          height: 50px;
+          width: 50px;
+        }
+      }
+
+      .right {
+        width: 40px;
+        border-radius: 0px 5px 5px 0px;
+      }
+
+      .left-able {
+        background-color: #DFFFDB;
+      }
+
+      .right-able {
+        background-color: #00DB2F;
+      }
+
+      .left-disable {
+        background-color: #FDEAEA;
+      }
+
+      .right-disable {
+        background-color: #FE5757;
+      }
+    }
+  }
+
+  .create-journey {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 12px;
+    background-color: #27445D20;
+    border-radius: 5px;
+
+    .title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #606060;
+    }
+  }
 }

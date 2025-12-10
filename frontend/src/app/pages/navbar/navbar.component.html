@@ -3,9 +3,9 @@
     <img src="assets/imgs/mini-logo.png" alt="Bus logo" class="navbar-logo" />
     <a class="navbar-brand" routerLink="/">BusCompany</a>
   </div>
-  <div class="navbar-right">
+  <div class="navbar-right" (click)="goToProfile()">
     <div class="info-account">
-      <span>Eduardo Lázaro</span>
+      <span>{{ userName }}</span>
       <span>Usuário externo</span>
     </div>
     <div class="image-account">

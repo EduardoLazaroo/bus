@@ -1,0 +1,36 @@
+<div class="comp-with-nav">
+  <app-navbar></app-navbar>
+  <div class="profile-container">
+    <div class="profile-header">
+      <div (click)="backPage()">
+        <button><</button>
+      </div>
+      <div>
+        <h4>Perfil</h4>
+      </div>
+      <div></div>
+    </div>
+    <div>
+      <img src="assets/imgs/user-icon.svg" alt="usericon" class="user-icon" />
+    </div>
+    <div class="profile-details">
+      <div class="input-group">
+        <label>Nome</label>
+        <p>{{ userDto?.name }}</p>
+      </div>
+      <div class="input-group">
+        <label>Email</label>
+        <p>{{ userDto?.email }}</p>
+      </div>
+      <div class="input-group">
+        <label>Função</label>
+        <p>{{ userDto?.role }}</p>
+      </div>
+      <div class="input-group">
+        <label>Phone</label>
+        <p>{{ userDto?.phone }}</p>
+      </div>
+      <button class="btn btn-cancel" (click)="logout()">Sair</button>
+    </div>
+  </div>
+</div>
