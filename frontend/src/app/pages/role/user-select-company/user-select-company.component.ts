@@ -1,11 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { AuthService } from '../../../core/services/auth.service';
-
 
 @Component({
-  selector: 'app-use-select-company',
+  selector: 'app-user-select-company',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './user-select-company.component.html',

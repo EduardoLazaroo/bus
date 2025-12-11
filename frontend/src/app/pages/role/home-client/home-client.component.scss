@@ -1,8 +1,22 @@
-.home-container {
-  text-align: center;
-  margin-top: 50px;
-}
+.no-company {
 
-strong {
-  color: #007bff;
+  .welcome-message,
+  .finish-update {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding: 32px;
+
+    .img-register {
+      width: 250px;
+    }
+
+    .bottom-confirm {
+      margin-bottom: 10px;
+      display: flex;
+      gap: 1rem;
+      flex-direction: column;
+    }
+  }
 }

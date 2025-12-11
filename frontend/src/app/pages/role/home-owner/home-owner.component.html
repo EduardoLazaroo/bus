@@ -2,16 +2,8 @@
 <div class="comp-with-nav">
   <!-- SEM EMPRESA -->
   <div *ngIf="status === 'NO_COMPANY'" class="no-company">
-    <app-company-activation
-      (companyCreated)="companyCreated()"
-    ></app-company-activation>
-  </div>
-
-  <!-- REJEITADO -->
-  <div *ngIf="status === 'REJECTED'" class="card">
-    <h2>Cadastro Rejeitado</h2>
-    <p>Entre em contato para prosseguir com nova tentativa.</p>
-    <button class="btn-secondary">Entrar em contato</button>
+    <app-company-activation (companyCreated)="companyCreated()">
+    </app-company-activation>
   </div>
 
   <!-- PENDENTE -->
