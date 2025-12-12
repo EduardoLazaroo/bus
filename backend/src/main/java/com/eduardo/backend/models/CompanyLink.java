@@ -24,7 +24,9 @@ public class CompanyLink {
     @JoinColumn(name = "company_id")
     private Company company;
 
-    private Boolean approved = false; // status do vínculo
+    private Boolean approved;
+
+    private Boolean active;
 
     @Enumerated(EnumType.STRING)
     private UserRole roleInCompany; // DRIVER ou CLIENT (ou OWNER se quiser)

@@ -4,11 +4,14 @@ import com.eduardo.backend.dtos.CompanyCreateDTO;
 import com.eduardo.backend.dtos.CompanyResponseDTO;
 import com.eduardo.backend.dtos.CompanyApproveDTO;
 import com.eduardo.backend.enums.CompanyStatus;
+import com.eduardo.backend.enums.UserRole;
 import com.eduardo.backend.exceptions.BadRequestException;
 import com.eduardo.backend.exceptions.ResourceNotFoundException;
 import com.eduardo.backend.models.Company;
+import com.eduardo.backend.models.CompanyLink;
 import com.eduardo.backend.models.User;
 import com.eduardo.backend.repositories.CompanyRepository;
+import com.eduardo.backend.repositories.CompanyLinkRepository;
 import com.eduardo.backend.repositories.UserRepository;
 import com.eduardo.backend.services.CompanyService;
 import com.eduardo.backend.utils.SecurityUtils;
@@ -23,19 +26,26 @@ public class CompanyServiceImpl implements CompanyService {
 
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
+    private final CompanyLinkRepository companyLinkRepository;
 
-    public CompanyServiceImpl(CompanyRepository companyRepository,
-            UserRepository userRepository) {
+    // Injeta todos os repos necessários
+    public CompanyServiceImpl(
+            CompanyRepository companyRepository,
+            UserRepository userRepository,
+            CompanyLinkRepository companyLinkRepository
+    ) {
         this.companyRepository = companyRepository;
         this.userRepository = userRepository;
+        this.companyLinkRepository = companyLinkRepository;
     }
 
+    // Cria a empresa garantindo que o usuário logado é um OWNER.
     @Override
     @Transactional
     public CompanyResponseDTO createCompany(CompanyCreateDTO dto) {
         User owner = SecurityUtils.getCurrentUserOrThrow(userRepository);
 
-        if (owner.getRole() == null || !owner.getRole().name().equals("OWNER")) {
+        if (owner.getRole() == null || !owner.getRole().equals(UserRole.OWNER)) {
             throw new BadRequestException("Apenas usuários com role OWNER podem criar empresas");
         }
 
@@ -57,8 +67,6 @@ public class CompanyServiceImpl implements CompanyService {
                 .recipientName(dto.getRecipientName())
                 .mobilePhone(dto.getMobilePhone())
                 .unitType(dto.getUnitType())
-
-                // padrões do sistema
                 .status(CompanyStatus.PENDING)
                 .owner(owner)
                 .build();
@@ -67,6 +75,7 @@ public class CompanyServiceImpl implements CompanyService {
         return mapToDTO(saved);
     }
 
+    // Atualiza a empresa garantindo que quem está editando é o OWNER.
     @Override
     @Transactional
     public CompanyResponseDTO updateCompany(Long companyId, CompanyCreateDTO dto) {
@@ -102,10 +111,13 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public List<CompanyResponseDTO> getPendingCompanies() {
-        List<Company> list = companyRepository.findByStatus(CompanyStatus.PENDING);
-        return list.stream().map(this::mapToDTO).collect(Collectors.toList());
+        return companyRepository.findByStatus(CompanyStatus.PENDING)
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
+    // Aprova ou rejeita empresa E cria automaticamente o company_link
     @Override
     @Transactional
     public CompanyResponseDTO approveOrRejectCompany(Long companyId, CompanyApproveDTO dto) {
@@ -113,7 +125,20 @@ public class CompanyServiceImpl implements CompanyService {
                 .orElseThrow(() -> new ResourceNotFoundException("Company não encontrada"));
 
         if (dto.getApprove() != null && dto.getApprove()) {
+
             company.setStatus(CompanyStatus.APPROVED);
+
+            // Se for aprovado e ainda não existir o vínculo, cria
+            CompanyLink link = CompanyLink.builder()
+                    .approved(true)
+                    .roleInCompany(UserRole.OWNER)
+                    .user(company.getOwner())
+                    .company(company)
+                    .active(true)
+                    .build();
+
+            companyLinkRepository.save(link);
+
         } else {
             company.setStatus(CompanyStatus.REJECTED);
         }
@@ -125,11 +150,11 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public List<CompanyResponseDTO> getCompaniesByOwner() {
         User owner = SecurityUtils.getCurrentUserOrThrow(userRepository);
-        List<Company> companies = companyRepository.findAll()
+        return companyRepository.findAll()
                 .stream()
                 .filter(c -> c.getOwner() != null && c.getOwner().getId().equals(owner.getId()))
+                .map(this::mapToDTO)
                 .collect(Collectors.toList());
-        return companies.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
     @Override
@@ -142,6 +167,7 @@ public class CompanyServiceImpl implements CompanyService {
     private CompanyResponseDTO mapToDTO(Company c) {
         Long ownerId = c.getOwner() != null ? c.getOwner().getId() : null;
         String ownerName = c.getOwner() != null ? c.getOwner().getName() : null;
+
         return CompanyResponseDTO.builder()
                 .id(c.getId())
                 .companyName(c.getCompanyName())
@@ -161,7 +187,6 @@ public class CompanyServiceImpl implements CompanyService {
                 .recipientName(c.getRecipientName())
                 .mobilePhone(c.getMobilePhone())
                 .unitType(c.getUnitType())
-
                 .status(c.getStatus())
                 .ownerId(ownerId)
                 .ownerName(ownerName)

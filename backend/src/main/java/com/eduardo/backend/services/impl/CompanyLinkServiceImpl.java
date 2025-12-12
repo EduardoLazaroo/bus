@@ -1,9 +1,7 @@
 package com.eduardo.backend.services.impl;
 
-import com.eduardo.backend.dtos.CompanyLinkInviteDTO;
-import com.eduardo.backend.dtos.CompanyLinkResponseDTO;
-import com.eduardo.backend.exceptions.BadRequestException;
-import com.eduardo.backend.exceptions.ResourceNotFoundException;
+import com.eduardo.backend.dtos.CompanyResponseDTO;
+import com.eduardo.backend.enums.CompanyStatus;
 import com.eduardo.backend.models.Company;
 import com.eduardo.backend.models.CompanyLink;
 import com.eduardo.backend.models.User;
@@ -13,7 +11,6 @@ import com.eduardo.backend.repositories.UserRepository;
 import com.eduardo.backend.services.CompanyLinkService;
 import com.eduardo.backend.utils.SecurityUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,92 +18,78 @@ import java.util.stream.Collectors;
 @Service
 public class CompanyLinkServiceImpl implements CompanyLinkService {
 
-    private final CompanyLinkRepository companyLinkRepository;
-    private final CompanyRepository companyRepository;
-    private final UserRepository userRepository;
+    private final CompanyLinkRepository linkRepo;
+    private final CompanyRepository companyRepo;
+    private final UserRepository userRepo;
 
-    public CompanyLinkServiceImpl(CompanyLinkRepository companyLinkRepository,
-                                  CompanyRepository companyRepository,
-                                  UserRepository userRepository) {
-        this.companyLinkRepository = companyLinkRepository;
-        this.companyRepository = companyRepository;
-        this.userRepository = userRepository;
+    public CompanyLinkServiceImpl(
+            CompanyLinkRepository linkRepo,
+            CompanyRepository companyRepo,
+            UserRepository userRepo
+    ) {
+        this.linkRepo = linkRepo;
+        this.companyRepo = companyRepo;
+        this.userRepo = userRepo;
     }
 
+    /**
+     * Retorna as empresas APROVADAS para as quais o usuário logado AINDA NÃO
+     * possui vínculo. Serve como lista de "empresas disponíveis" para solicitar acesso.
+     */
     @Override
-    @Transactional
-    public CompanyLinkResponseDTO invite(CompanyLinkInviteDTO dto) {
-        User current = SecurityUtils.getCurrentUserOrThrow(userRepository);
+    public List<CompanyResponseDTO> getAvailableCompaniesForUser() {
 
-        // somente OWNER da company pode convidar
-        Company company = companyRepository.findById(dto.getCompanyId())
-                .orElseThrow(() -> new ResourceNotFoundException("Company não encontrada"));
+        // Obtém usuário logado
+        User user = SecurityUtils.getCurrentUserOrThrow(userRepo);
 
-        if (company.getOwner() == null || !company.getOwner().getId().equals(current.getId())) {
-            throw new BadRequestException("Apenas o OWNER da empresa pode convidar usuários");
-        }
+        // Pega todas as empresas aprovadas
+        List<Company> approvedCompanies = companyRepo.findByStatus(CompanyStatus.APPROVED);
 
-        User invited = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("Usuário a ser convidado não encontrado"));
+        // Lista de IDs de empresas que já possuem vínculo com o usuário
+        List<Long> companiesLinked = linkRepo.findByUserId(user.getId()).stream()
+                .map(link -> link.getCompany().getId())
+                .collect(Collectors.toList());
 
-        // evitar convites duplicados
-        if (companyLinkRepository.existsByUserAndCompany(invited, company)) {
-            throw new BadRequestException("Usuário já possui vínculo com essa empresa");
-        }
+        // Filtra apenas as empresas nas quais o usuário ainda pode solicitar vínculo
+        List<Company> availableCompanies = approvedCompanies.stream()
+                .filter(company -> !companiesLinked.contains(company.getId()))
+                .collect(Collectors.toList());
 
-        CompanyLink link = CompanyLink.builder()
-                .company(company)
-                .user(invited)
-                .approved(false)
-                .roleInCompany(dto.getRoleInCompany())
-                .build();
-
-        CompanyLink saved = companyLinkRepository.save(link);
-        return mapToDTO(saved);
+        return availableCompanies.stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
-    @Override
-    @Transactional
-    public CompanyLinkResponseDTO approveLink(Long linkId) {
-        User current = SecurityUtils.getCurrentUserOrThrow(userRepository);
-        CompanyLink link = companyLinkRepository.findById(linkId)
-                .orElseThrow(() -> new ResourceNotFoundException("Vínculo não encontrado"));
+    /**
+     * Converte Company -> CompanyResponseDTO seguindo o mesmo padrão
+     * utilizado no CompanyService, garantindo consistência no retorno.
+     */
+    private CompanyResponseDTO mapToDTO(Company c) {
+        Long ownerId = c.getOwner() != null ? c.getOwner().getId() : null;
+        String ownerName = c.getOwner() != null ? c.getOwner().getName() : null;
 
-        // Apenas OWNER da company pode aprovar
-        Company company = link.getCompany();
-        if (company.getOwner() == null || !company.getOwner().getId().equals(current.getId())) {
-            throw new BadRequestException("Apenas o OWNER da empresa pode aprovar vínculos");
-        }
-
-        link.setApproved(true);
-        companyLinkRepository.save(link);
-        return mapToDTO(link);
-    }
-
-    @Override
-    public List<CompanyLinkResponseDTO> getLinksForCompany(Long companyId) {
-        Company company = companyRepository.findById(companyId)
-                .orElseThrow(() -> new ResourceNotFoundException("Company não encontrada"));
-        List<CompanyLink> list = companyLinkRepository.findByCompany(company);
-        return list.stream().map(this::mapToDTO).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<CompanyLinkResponseDTO> getLinksForCurrentUser() {
-        User current = SecurityUtils.getCurrentUserOrThrow(userRepository);
-        List<CompanyLink> list = companyLinkRepository.findByUser(current);
-        return list.stream().map(this::mapToDTO).collect(Collectors.toList());
-    }
-
-    private CompanyLinkResponseDTO mapToDTO(CompanyLink link) {
-        return CompanyLinkResponseDTO.builder()
-                .id(link.getId())
-                .userId(link.getUser() != null ? link.getUser().getId() : null)
-                .userName(link.getUser() != null ? link.getUser().getName() : null)
-                .companyId(link.getCompany() != null ? link.getCompany().getId() : null)
-                .companyName(link.getCompany() != null ? link.getCompany().getCompanyName() : null)
-                .approved(link.getApproved())
-                .roleInCompany(link.getRoleInCompany())
+        return CompanyResponseDTO.builder()
+                .id(c.getId())
+                .companyName(c.getCompanyName())
+                .cnpj(c.getCnpj())
+                .country(c.getCountry())
+                .state(c.getState())
+                .city(c.getCity())
+                .district(c.getDistrict())
+                .street(c.getStreet())
+                .phone(c.getPhone())
+                .zipCode(c.getZipCode())
+                .number(c.getNumber())
+                .complement(c.getComplement())
+                .email(c.getEmail())
+                .paymentType(c.getPaymentType())
+                .paymentInfo(c.getPaymentInfo())
+                .recipientName(c.getRecipientName())
+                .mobilePhone(c.getMobilePhone())
+                .unitType(c.getUnitType())
+                .status(c.getStatus())
+                .ownerId(ownerId)
+                .ownerName(ownerName)
                 .build();
     }
 }

@@ -58,6 +58,7 @@
             <column name="role_in_company" type="VARCHAR(50)"/>
             <column name="user_id" type="BIGINT"/>
             <column name="company_id" type="BIGINT"/>
+            <column name="active" type="BOOLEAN" defaultValueBoolean="true"/>
         </createTable>
 
         <createTable tableName="vehicles">

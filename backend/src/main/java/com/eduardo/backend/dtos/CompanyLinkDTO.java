@@ -10,6 +10,7 @@ public class CompanyLinkDTO {
     private Long id;
     private LinkStatus status;
     private UserRole role;
+    private Boolean active;
     private Long userId;
     private Long companyId;
 }

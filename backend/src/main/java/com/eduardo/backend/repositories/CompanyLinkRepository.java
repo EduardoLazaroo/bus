@@ -10,7 +10,5 @@ import java.util.List;
 
 @Repository
 public interface CompanyLinkRepository extends JpaRepository<CompanyLink, Long> {
-    List<CompanyLink> findByCompany(Company company);
-    List<CompanyLink> findByUser(User user);
-    boolean existsByUserAndCompany(User user, Company company);
+    List<CompanyLink> findByUserId(Long userId);
 }

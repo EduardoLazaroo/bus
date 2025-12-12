@@ -25,10 +25,10 @@ export class CompanyService {
   }
 
   // ADMIN aprova/reprova
-  approveCompany(companyId: number, approved: boolean): Observable<CompanyDTO> {
+  approveCompany(companyId: number, approve: boolean): Observable<CompanyDTO> {
     return this.http.put<CompanyDTO>(
       `${this.apiUrl}/${companyId}/approve`,
-      { approved } // CompanyApproveDTO
+      { approve } // nome correto para bater com o backend
     );
   }
 
