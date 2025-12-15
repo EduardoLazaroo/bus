@@ -36,8 +36,12 @@ export class HomeOwnerComponent implements OnInit {
     this.loadCompanyStatus();
   }
 
-  goToAdvancedConf(){
+  goToAdvancedConf() {
     this.router.navigate(['/final-registration-owner']);
+  }
+
+  goToCustomer() {
+    this.router.navigate(['/customer']);
   }
 
   loadCompanyStatus() {

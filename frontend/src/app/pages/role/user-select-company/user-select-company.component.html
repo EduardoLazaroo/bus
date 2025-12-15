@@ -1,16 +1,61 @@
 <div class="user-select-content">
-  <div class="head-text">
-    <span
-      >Para prosseguirmos, é necessário que você selecione a cidade à qual
-      pertence e a empresa correspondente.</span
-    >
-  </div>
-  <div>
-    <label for="role">Selecione a empresa</label>
-    <select id="role" name="role" required>
-      <option value="" disabled>Selecione...</option>
-      <option value="teste1">teste1</option>
-      <option value="teste1">teste1</option>
+  <!-- STEP 1: SELEÇÃO -->
+  <div *ngIf="step === 'SELECT'">
+    <div class="head-text">
+      <span>
+        Para prosseguirmos, selecione a empresa à qual você pertence.
+      </span>
+    </div>
+
+    <label for="company">Selecione a empresa</label>
+
+    <select id="company" (change)="onCompanyChange($event)">
+      <option value="" disabled selected>Selecione...</option>
+      <option *ngFor="let link of availableCompanies" [value]="link.companyId">
+        {{ link.companyName }}
+      </option>
     </select>
+
+    <button
+      type="button"
+      class="btn btn-primary"
+      [disabled]="!selectedCompanyId"
+      (click)="goToConfirm()"
+    >
+      Próximo
+    </button>
+  </div>
+
+  <!-- STEP 2: CONFIRMAÇÃO -->
+  <div *ngIf="step === 'CONFIRM'" class="finish-update">
+    <img
+      src="../../../../assets/imgs/register_imgtwo_client.png"
+      class="img-register"
+    />
+
+    <div class="bottom-confirm">
+      <h2>Pronto!</h2>
+      <span>
+        Agora, basta solicitar o vínculo e aguardar a aprovação da empresa. Se
+        quiser agilizar o processo, você pode entrar em contato diretamente com
+        a empresa.
+      </span>
+
+      <div class="actions">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="backToSelect()"
+        >
+          Voltar
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="requestAccess()"
+        ></button>
+      </div>
+    </div>
   </div>
 </div>

@@ -1,0 +1,19 @@
+<div class="customer-container">
+  <h2>Solicitações pendentes</h2>
+
+  <div *ngIf="customersPending.length === 0" class="empty">
+    <p>Nenhuma solicitação pendente no momento.</p>
+  </div>
+
+  <div class="customer-card" *ngFor="let client of customersPending">
+    <div class="info">
+      <strong>Cliente:</strong> {{ client.userName }}
+      <br />
+      <strong>Empresa:</strong> {{ client.companyName }}
+    </div>
+
+    <button class="btn btn-primary" (click)="approve(client.id!)">
+      Aprovar
+    </button>
+  </div>
+</div>

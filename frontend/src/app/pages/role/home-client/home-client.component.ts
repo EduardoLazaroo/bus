@@ -1,11 +1,10 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { AuthService,  } from '../../../core/services/auth.service';
 import { UserSelectCompanyComponent } from '../user-select-company/user-select-company.component';
 import { Navbar } from '../../navbar/navbar.component';
 import { FinalRegistrationClientComponent } from '../final-registration-client/final-registration-client.component';
-type ClientStatus = 'NO_COMPANY' | 'PENDING' | 'APPROVED' | 'REJECTED';
+import { CompanyLinkService } from '../../../core/services/companyLink.service';
+export type ClientFlowStatus = 'NO_COMPANY' | 'PENDING' | 'APPROVED';
 
 @Component({
   selector: 'app-home-client',
@@ -19,18 +18,35 @@ type ClientStatus = 'NO_COMPANY' | 'PENDING' | 'APPROVED' | 'REJECTED';
   templateUrl: './home-client.component.html',
   styleUrls: ['./home-client.component.scss'],
 })
-export class HomeClientComponent  {
-  @Output() userActivated = new EventEmitter<void>();
+export class HomeClientComponent implements OnInit {
+  status: ClientFlowStatus = 'NO_COMPANY';
+  step = 0;
 
-  userRole: string | null = null;
-  status: ClientStatus = 'NO_COMPANY';
-  step: number = 0;
+  constructor(private companyLinkService: CompanyLinkService) {}
 
-  constructor(private authService: AuthService, private router: Router) {
-    this.userRole = this.authService.getUserRole();
+  ngOnInit(): void {
+    this.resolveClientStatus();
   }
 
-  onUserActivated() {
+  private resolveClientStatus(): void {
+    this.companyLinkService.getMyLinks().subscribe({
+      next: (links) => {
+        if (links.some((l) => l.status === 'APPROVED')) {
+          this.status = 'APPROVED';
+          return;
+        }
+
+        if (links.some((l) => l.status === 'PENDING')) {
+          this.status = 'PENDING';
+          return;
+        }
+
+        this.status = 'NO_COMPANY';
+      },
+    });
+  }
+
+  onUserActivated(): void {
     this.step = 2;
   }
 }

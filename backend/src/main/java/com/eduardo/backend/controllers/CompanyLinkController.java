@@ -29,6 +29,13 @@ public class CompanyLinkController {
         return ResponseEntity.ok(companyLinkService.requestAccess(companyId));
     }
 
+    // CLIENT vê seus vínculos
+    @GetMapping("/mine")
+    public ResponseEntity<List<CompanyLinkResponseDTO>> myLinks() {
+        return ResponseEntity.ok(companyLinkService.getMyLinks());
+    }
+
+
     // 3. OWNER vê solicitações pendentes
     @GetMapping("/pending")
     public ResponseEntity<List<CompanyLinkResponseDTO>> pending() {

@@ -83,6 +83,17 @@ public class CompanyLinkServiceImpl implements CompanyLinkService {
         return mapToDTO(link);
     }
 
+    // CLIENT vê seus vínculos
+    @Override
+    public List<CompanyLinkResponseDTO> getMyLinks() {
+    User user = SecurityUtils.getCurrentUserOrThrow(userRepository);
+
+    return companyLinkRepository.findByUserId(user.getId())
+            .stream()
+            .map(this::mapToDTO)
+            .toList();
+    }
+
     // 3. OWNER vê solicitações pendentes
     @Override
     public List<CompanyLinkResponseDTO> getPendingRequestsForOwner() {

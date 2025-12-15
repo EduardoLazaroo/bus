@@ -1,54 +1,40 @@
 <app-navbar></app-navbar>
+
 <div class="comp-with-nav">
-  <div *ngIf="status === 'NO_COMPANY'" class="no-company">
-    <div class="welcome-message" *ngIf="step === 0">
+  <!-- NO COMPANY -->
+  <div *ngIf="status === 'NO_COMPANY'">
+    <div *ngIf="step === 0" class="welcome-message">
       <img
         src="../../../../assets/imgs/register_imgone_client.png"
         class="img-register"
       />
       <div class="bottom-confirm">
         <h2>Finalize seu cadastro</h2>
-        <span
-          >Para fazer parte do fretado voce precisa concluir seu cadastro, isso
-          leva menos de 5 minutos!</span
-        >
+        <span>
+          Para fazer parte do fretado você precisa concluir seu cadastro.
+        </span>
         <button class="btn btn-primary" (click)="step = 1">Próximo</button>
       </div>
     </div>
 
     <div *ngIf="step === 1">
-      <app-final-registration-client
-        (userActivated)="onUserActivated()"
-      ></app-final-registration-client>
+      <app-final-registration-client (userActivated)="onUserActivated()">
+      </app-final-registration-client>
     </div>
 
     <div *ngIf="step === 2">
-      <app-user-select-company></app-user-select-company>
-    </div>
-
-    <div class="finish-update" *ngIf="step === 3">
-      <img
-        src="../../../../assets/imgs/register_imgtwo_client.png"
-        class="img-register"
-      />
-      <div class="bottom-confirm">
-        <h2>Pronto!</h2>
-        <span
-          >Agora, basta solicitar o vínculo e aguardar a aprovação da empresa.
-          Se quiser agilizar o processo, você pode entrar em contato diretamente
-          com a empresa.</span
-        >
-        <button class="btn btn-primary" (click)="status = 'PENDING'">
-          Próximo
-        </button>
-      </div>
+      <app-user-select-company (requestSent)="status = 'PENDING'">
+      </app-user-select-company>
     </div>
   </div>
 
+  <!-- PENDING -->
   <div *ngIf="status === 'PENDING'" class="pending">
-    <p>Sua conta está pendente de aprovação. Por favor, aguarde.</p>
+    <h3>Solicitação em análise</h3>
+    <p>Aguarde a aprovação da empresa.</p>
   </div>
 
+  <!-- APPROVED -->
   <div *ngIf="status === 'APPROVED'" class="approved">
     <p>Sua conta foi aprovada! Você já pode acessar o sistema.</p>
   </div>
