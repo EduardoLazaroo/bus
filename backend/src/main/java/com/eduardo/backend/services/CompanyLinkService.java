@@ -1,8 +1,12 @@
 package com.eduardo.backend.services;
 
-import com.eduardo.backend.dtos.CompanyResponseDTO;
+import com.eduardo.backend.dtos.CompanyLinkResponseDTO;
+
 import java.util.List;
 
 public interface CompanyLinkService {
-    List<CompanyResponseDTO> getAvailableCompaniesForUser();
+    List<CompanyLinkResponseDTO> getAvailableCompanies();
+    CompanyLinkResponseDTO requestAccess(Long companyId);
+    List<CompanyLinkResponseDTO> getPendingRequestsForOwner();
+    CompanyLinkResponseDTO approve(Long linkId);
 }

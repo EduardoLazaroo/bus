@@ -1,9 +1,8 @@
 package com.eduardo.backend.controllers;
 
-import com.eduardo.backend.dtos.CompanyResponseDTO;
+import com.eduardo.backend.dtos.CompanyLinkResponseDTO;
 import com.eduardo.backend.services.CompanyLinkService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,15 +17,27 @@ public class CompanyLinkController {
         this.companyLinkService = companyLinkService;
     }
 
-    /**
-     * Retorna todas as empresas APROVADAS que o usuário logado
-     * ainda NÃO está vinculado. Serve para o cliente escolher
-     * em qual empresa quer solicitar participação.
-     */
+    // 1. Lista empresas aprovadas para o CLIENT solicitar
     @GetMapping("/available")
-    @PreAuthorize("hasAnyRole('CLIENT', 'DRIVER', 'OWNER')")
-    public ResponseEntity<List<CompanyResponseDTO>> getAvailableCompanies() {
-        List<CompanyResponseDTO> result = companyLinkService.getAvailableCompaniesForUser();
-        return ResponseEntity.ok(result);
+    public ResponseEntity<List<CompanyLinkResponseDTO>> getAvailable() {
+        return ResponseEntity.ok(companyLinkService.getAvailableCompanies());
+    }
+
+    // 2. CLIENT solicita vínculo
+    @PostMapping("/request/{companyId}")
+    public ResponseEntity<CompanyLinkResponseDTO> request(@PathVariable Long companyId) {
+        return ResponseEntity.ok(companyLinkService.requestAccess(companyId));
+    }
+
+    // 3. OWNER vê solicitações pendentes
+    @GetMapping("/pending")
+    public ResponseEntity<List<CompanyLinkResponseDTO>> pending() {
+        return ResponseEntity.ok(companyLinkService.getPendingRequestsForOwner());
+    }
+
+    // 4. OWNER aprova
+    @PutMapping("/{linkId}/approve")
+    public ResponseEntity<CompanyLinkResponseDTO> approve(@PathVariable Long linkId) {
+        return ResponseEntity.ok(companyLinkService.approve(linkId));
     }
 }

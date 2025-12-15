@@ -1,7 +1,10 @@
 package com.eduardo.backend.services.impl;
 
-import com.eduardo.backend.dtos.CompanyResponseDTO;
+import com.eduardo.backend.dtos.CompanyLinkResponseDTO;
 import com.eduardo.backend.enums.CompanyStatus;
+import com.eduardo.backend.enums.LinkStatus;
+import com.eduardo.backend.exceptions.BadRequestException;
+import com.eduardo.backend.exceptions.ResourceNotFoundException;
 import com.eduardo.backend.models.Company;
 import com.eduardo.backend.models.CompanyLink;
 import com.eduardo.backend.models.User;
@@ -11,6 +14,7 @@ import com.eduardo.backend.repositories.UserRepository;
 import com.eduardo.backend.services.CompanyLinkService;
 import com.eduardo.backend.utils.SecurityUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,78 +22,106 @@ import java.util.stream.Collectors;
 @Service
 public class CompanyLinkServiceImpl implements CompanyLinkService {
 
-    private final CompanyLinkRepository linkRepo;
-    private final CompanyRepository companyRepo;
-    private final UserRepository userRepo;
+    private final CompanyRepository companyRepository;
+    private final CompanyLinkRepository companyLinkRepository;
+    private final UserRepository userRepository;
 
     public CompanyLinkServiceImpl(
-            CompanyLinkRepository linkRepo,
-            CompanyRepository companyRepo,
-            UserRepository userRepo
+            CompanyRepository companyRepository,
+            CompanyLinkRepository companyLinkRepository,
+            UserRepository userRepository
     ) {
-        this.linkRepo = linkRepo;
-        this.companyRepo = companyRepo;
-        this.userRepo = userRepo;
+        this.companyRepository = companyRepository;
+        this.companyLinkRepository = companyLinkRepository;
+        this.userRepository = userRepository;
     }
 
-    /**
-     * Retorna as empresas APROVADAS para as quais o usuário logado AINDA NÃO
-     * possui vínculo. Serve como lista de "empresas disponíveis" para solicitar acesso.
-     */
+    // 1. Lista empresas aprovadas para o CLIENT solicitar
     @Override
-    public List<CompanyResponseDTO> getAvailableCompaniesForUser() {
+    public List<CompanyLinkResponseDTO> getAvailableCompanies() {
+        User user = SecurityUtils.getCurrentUserOrThrow(userRepository);
 
-        // Obtém usuário logado
-        User user = SecurityUtils.getCurrentUserOrThrow(userRepo);
+        return companyRepository.findAll().stream()
+                .filter(c -> c.getStatus() == CompanyStatus.APPROVED)
+                .filter(c -> !companyLinkRepository.existsByUserIdAndCompanyId(user.getId(), c.getId()))
+                .map(c -> CompanyLinkResponseDTO.builder()
+                        .id(null)
+                        .userId(user.getId())
+                        .userName(user.getName())
+                        .companyId(c.getId())
+                        .companyName(c.getCompanyName())
+                        .status(null)
+                        .build()
+                ).collect(Collectors.toList());
+    }
 
-        // Pega todas as empresas aprovadas
-        List<Company> approvedCompanies = companyRepo.findByStatus(CompanyStatus.APPROVED);
+    // 2. CLIENT solicita vínculo
+    @Override
+    @Transactional
+    public CompanyLinkResponseDTO requestAccess(Long companyId) {
+        User user = SecurityUtils.getCurrentUserOrThrow(userRepository);
 
-        // Lista de IDs de empresas que já possuem vínculo com o usuário
-        List<Long> companiesLinked = linkRepo.findByUserId(user.getId()).stream()
-                .map(link -> link.getCompany().getId())
-                .collect(Collectors.toList());
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada"));
 
-        // Filtra apenas as empresas nas quais o usuário ainda pode solicitar vínculo
-        List<Company> availableCompanies = approvedCompanies.stream()
-                .filter(company -> !companiesLinked.contains(company.getId()))
-                .collect(Collectors.toList());
+        if (company.getStatus() != CompanyStatus.APPROVED) {
+            throw new BadRequestException("Empresa não está aprovada ainda");
+        }
 
-        return availableCompanies.stream()
+        if (companyLinkRepository.existsByUserIdAndCompanyId(user.getId(), companyId)) {
+            throw new BadRequestException("Você já solicitou acesso a esta empresa");
+        }
+
+        CompanyLink link = CompanyLink.builder()
+                .user(user)
+                .company(company)
+                .status(LinkStatus.PENDING)
+                .build();
+
+        companyLinkRepository.save(link);
+
+        return mapToDTO(link);
+    }
+
+    // 3. OWNER vê solicitações pendentes
+    @Override
+    public List<CompanyLinkResponseDTO> getPendingRequestsForOwner() {
+        User owner = SecurityUtils.getCurrentUserOrThrow(userRepository);
+
+        return companyLinkRepository
+                .findByCompanyOwnerIdAndStatus(owner.getId(), LinkStatus.PENDING)
+                .stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Converte Company -> CompanyResponseDTO seguindo o mesmo padrão
-     * utilizado no CompanyService, garantindo consistência no retorno.
-     */
-    private CompanyResponseDTO mapToDTO(Company c) {
-        Long ownerId = c.getOwner() != null ? c.getOwner().getId() : null;
-        String ownerName = c.getOwner() != null ? c.getOwner().getName() : null;
+    // 4. OWNER aprova
+    @Override
+    @Transactional
+    public CompanyLinkResponseDTO approve(Long linkId) {
+        User owner = SecurityUtils.getCurrentUserOrThrow(userRepository);
 
-        return CompanyResponseDTO.builder()
-                .id(c.getId())
-                .companyName(c.getCompanyName())
-                .cnpj(c.getCnpj())
-                .country(c.getCountry())
-                .state(c.getState())
-                .city(c.getCity())
-                .district(c.getDistrict())
-                .street(c.getStreet())
-                .phone(c.getPhone())
-                .zipCode(c.getZipCode())
-                .number(c.getNumber())
-                .complement(c.getComplement())
-                .email(c.getEmail())
-                .paymentType(c.getPaymentType())
-                .paymentInfo(c.getPaymentInfo())
-                .recipientName(c.getRecipientName())
-                .mobilePhone(c.getMobilePhone())
-                .unitType(c.getUnitType())
-                .status(c.getStatus())
-                .ownerId(ownerId)
-                .ownerName(ownerName)
+        CompanyLink link = companyLinkRepository.findById(linkId)
+                .orElseThrow(() -> new ResourceNotFoundException("Solicitação não encontrada"));
+
+        if (!link.getCompany().getOwner().getId().equals(owner.getId())) {
+            throw new BadRequestException("Você não é dono desta empresa");
+        }
+
+        link.setStatus(LinkStatus.APPROVED);
+        companyLinkRepository.save(link);
+
+        return mapToDTO(link);
+    }
+
+    private CompanyLinkResponseDTO mapToDTO(CompanyLink link) {
+        return CompanyLinkResponseDTO.builder()
+                .id(link.getId())
+                .userId(link.getUser().getId())
+                .userName(link.getUser().getName())
+                .companyId(link.getCompany().getId())
+                .companyName(link.getCompany().getCompanyName())
+                .status(link.getStatus())
                 .build();
     }
 }

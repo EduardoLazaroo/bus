@@ -4,6 +4,7 @@ import com.eduardo.backend.dtos.CompanyCreateDTO;
 import com.eduardo.backend.dtos.CompanyResponseDTO;
 import com.eduardo.backend.dtos.CompanyApproveDTO;
 import com.eduardo.backend.enums.CompanyStatus;
+import com.eduardo.backend.enums.LinkStatus;
 import com.eduardo.backend.enums.UserRole;
 import com.eduardo.backend.exceptions.BadRequestException;
 import com.eduardo.backend.exceptions.ResourceNotFoundException;
@@ -15,6 +16,7 @@ import com.eduardo.backend.repositories.CompanyLinkRepository;
 import com.eduardo.backend.repositories.UserRepository;
 import com.eduardo.backend.services.CompanyService;
 import com.eduardo.backend.utils.SecurityUtils;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +30,6 @@ public class CompanyServiceImpl implements CompanyService {
     private final UserRepository userRepository;
     private final CompanyLinkRepository companyLinkRepository;
 
-    // Injeta todos os repos necessários
     public CompanyServiceImpl(
             CompanyRepository companyRepository,
             UserRepository userRepository,
@@ -43,6 +44,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     @Transactional
     public CompanyResponseDTO createCompany(CompanyCreateDTO dto) {
+
         User owner = SecurityUtils.getCurrentUserOrThrow(userRepository);
 
         if (owner.getRole() == null || !owner.getRole().equals(UserRole.OWNER)) {
@@ -79,10 +81,12 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     @Transactional
     public CompanyResponseDTO updateCompany(Long companyId, CompanyCreateDTO dto) {
+
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Company não encontrada"));
 
         User owner = SecurityUtils.getCurrentUserOrThrow(userRepository);
+
         if (!company.getOwner().getId().equals(owner.getId())) {
             throw new BadRequestException("Usuário não autorizado a atualizar esta empresa");
         }
@@ -121,23 +125,23 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     @Transactional
     public CompanyResponseDTO approveOrRejectCompany(Long companyId, CompanyApproveDTO dto) {
+
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Company não encontrada"));
 
         if (dto.getApprove() != null && dto.getApprove()) {
 
             company.setStatus(CompanyStatus.APPROVED);
-
             // Se for aprovado e ainda não existir o vínculo, cria
             CompanyLink link = CompanyLink.builder()
-                    .approved(true)
                     .roleInCompany(UserRole.OWNER)
                     .user(company.getOwner())
                     .company(company)
-                    .active(true)
+                    .status(LinkStatus.APPROVED)
                     .build();
 
             companyLinkRepository.save(link);
+
 
         } else {
             company.setStatus(CompanyStatus.REJECTED);
@@ -150,6 +154,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public List<CompanyResponseDTO> getCompaniesByOwner() {
         User owner = SecurityUtils.getCurrentUserOrThrow(userRepository);
+
         return companyRepository.findAll()
                 .stream()
                 .filter(c -> c.getOwner() != null && c.getOwner().getId().equals(owner.getId()))
@@ -159,12 +164,15 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public CompanyResponseDTO getCompany(Long companyId) {
+
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Company não encontrada"));
+
         return mapToDTO(company);
     }
 
     private CompanyResponseDTO mapToDTO(Company c) {
+
         Long ownerId = c.getOwner() != null ? c.getOwner().getId() : null;
         String ownerName = c.getOwner() != null ? c.getOwner().getName() : null;
 
