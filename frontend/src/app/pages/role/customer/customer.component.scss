@@ -34,7 +34,6 @@
         border: 1px solid gray;
       }
     }
-
   }
 
   .card-customers {
@@ -61,9 +60,38 @@
     width: 100%;
     border-radius: 5px;
     border: none;
+    margin-bottom: 1rem;
 
     span {
       color: gray;
     }
+  }
+
+  .card-users-linked {
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(220, 240, 220);
+    padding: 1rem;
+    width: 100%;
+    border-radius: 5px;
+    border: none;
+    margin-top: 20px;
+
+    h4 {
+      margin-bottom: 10px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  }
+
+  .empty-state {
+    color: gray;
+    font-size: 16px;
+    font-style: italic;
+  }
+
+  .btn-danger {
+    background-color: #f44336;
+    color: white;
   }
 }

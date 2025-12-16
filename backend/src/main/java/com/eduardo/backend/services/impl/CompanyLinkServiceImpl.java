@@ -3,6 +3,7 @@ package com.eduardo.backend.services.impl;
 import com.eduardo.backend.dtos.CompanyLinkResponseDTO;
 import com.eduardo.backend.enums.CompanyStatus;
 import com.eduardo.backend.enums.LinkStatus;
+import com.eduardo.backend.enums.UserRole;
 import com.eduardo.backend.exceptions.BadRequestException;
 import com.eduardo.backend.exceptions.ResourceNotFoundException;
 import com.eduardo.backend.models.Company;
@@ -120,9 +121,28 @@ public class CompanyLinkServiceImpl implements CompanyLinkService {
         }
 
         link.setStatus(LinkStatus.APPROVED);
+        link.setRoleInCompany(UserRole.CLIENT);
         companyLinkRepository.save(link);
 
         return mapToDTO(link);
+    }
+    
+    @Override
+    public List<CompanyLinkResponseDTO> getUsersLinkedToCompany(Long companyId) {
+        User owner = SecurityUtils.getCurrentUserOrThrow(userRepository);
+
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada"));
+
+        if (!company.getOwner().getId().equals(owner.getId())) {
+            throw new BadRequestException("Você não é dono desta empresa");
+        }
+
+        return companyLinkRepository
+                .findByCompanyIdAndStatus(companyId, LinkStatus.APPROVED)
+                .stream()
+                .map(this::mapToDTO)
+                .toList();
     }
 
     private CompanyLinkResponseDTO mapToDTO(CompanyLink link) {
@@ -132,6 +152,7 @@ public class CompanyLinkServiceImpl implements CompanyLinkService {
                 .userName(link.getUser().getName())
                 .companyId(link.getCompany().getId())
                 .companyName(link.getCompany().getCompanyName())
+                .role(link.getRoleInCompany())
                 .status(link.getStatus())
                 .build();
     }

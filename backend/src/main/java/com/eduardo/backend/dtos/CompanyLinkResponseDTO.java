@@ -1,6 +1,7 @@
 package com.eduardo.backend.dtos;
 
 import com.eduardo.backend.enums.LinkStatus;
+import com.eduardo.backend.enums.UserRole;
 import lombok.*;
 
 @Data
@@ -13,5 +14,6 @@ public class CompanyLinkResponseDTO {
     private String userName;
     private Long companyId;
     private String companyName;
+    private UserRole role;
     private LinkStatus status;
 }

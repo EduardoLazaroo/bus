@@ -16,4 +16,6 @@ public interface CompanyLinkRepository extends JpaRepository<CompanyLink, Long> 
 
     //    CLIENT vê seus vínculos
     List<CompanyLink> findByUserId(Long userId);
+
+    List<CompanyLink> findByCompanyIdAndStatus(Long companyId, LinkStatus status);
 }

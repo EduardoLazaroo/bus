@@ -47,4 +47,14 @@ public class CompanyLinkController {
     public ResponseEntity<CompanyLinkResponseDTO> approve(@PathVariable Long linkId) {
         return ResponseEntity.ok(companyLinkService.approve(linkId));
     }
+
+    // 5. OWNER GET users by company
+    @GetMapping("/company/{companyId}/users")
+    public ResponseEntity<List<CompanyLinkResponseDTO>> getUsersLinkedToCompany(
+            @PathVariable Long companyId
+    ) {
+        return ResponseEntity.ok(
+                companyLinkService.getUsersLinkedToCompany(companyId)
+        );
+    }
 }

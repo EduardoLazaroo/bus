@@ -3,6 +3,7 @@ export interface CompanyLinkResponseDTO {
   userId: number;
   userName: string;
   companyId: number;
+  role: string;
   companyName: string;
   status: 'PENDING' | 'APPROVED' | 'REJECTED' | null;
 }

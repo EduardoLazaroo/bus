@@ -10,4 +10,5 @@ public interface CompanyLinkService {
     List<CompanyLinkResponseDTO> getMyLinks();
     List<CompanyLinkResponseDTO> getPendingRequestsForOwner();
     CompanyLinkResponseDTO approve(Long linkId);
+    List<CompanyLinkResponseDTO> getUsersLinkedToCompany(Long companyId);
 }

@@ -3,7 +3,6 @@
   <div class="content-customer">
     <div class="profile-header">
       <div (click)="backPage()">
-        //ToDo
         <button><</button>
       </div>
       <div>
@@ -12,19 +11,42 @@
       <div></div>
     </div>
 
+    <!-- Resumo de solicitações -->
     <div class="card-customers">
       <img src="assets/imgs/mini-user.png" alt="mini onibus" />
-      <span>Adcionar Cliente</span>
-      <span *ngIf="customersPending.length === 0"> Nenhuma solicitação</span>
-      <span *ngIf="customersPending.length > 0"> Há solicitação</span>
+      <span>Adicionar Cliente</span>
+      <span *ngIf="customersPending.length === 0"
+        >Nenhuma solicitação pendente</span
+      >
+      <span *ngIf="customersPending.length > 0"
+        >Há {{ customersPending.length }} solicitação(ões)</span
+      >
     </div>
 
-    <div class="card-user" *ngFor="let client of customersPending">
-      <div class="info"><strong>Cliente:</strong> {{ client.userName }}</div>
+    <!-- Lista de pendentes -->
+    <div *ngIf="customersPending.length > 0">
+      <div class="card-user" *ngFor="let client of customersPending">
+        <div class="info"><strong>Cliente:</strong> {{ client.userName }}</div>
+        <button class="btn btn-primary" (click)="approve(client.id!)">
+          Aprovar
+        </button>
+      </div>
+    </div>
+    <div *ngIf="customersPending.length === 0">
+      <span class="empty-state">Não há solicitações pendentes</span>
+    </div>
 
-      <button class="btn btn-primary" (click)="approve(client.id!)">
-        Aprovar
-      </button>
+    <!-- Lista de vinculados -->
+    <div>
+      <div class="card-users-linked">
+        <h4>Usuários Vinculados</h4>
+        <div class="card-user" *ngFor="let client of customersLinked">
+          <div class="info">
+            <span class="info">{{ client.role }}</span>
+            <span> {{ client.userName }}</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

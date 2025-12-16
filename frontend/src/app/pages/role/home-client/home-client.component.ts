@@ -35,9 +35,10 @@ export class HomeClientComponent implements OnInit {
     this.resolveClientStatus();
   }
 
-  private resolveClientStatus(): void {
+  resolveClientStatus(): void {
     this.companyLinkService.getMyLinks().subscribe({
       next: (links) => {
+        console.warn(links)
         if (links.some((l) => l.status === 'APPROVED')) {
           this.status = 'APPROVED';
           return;

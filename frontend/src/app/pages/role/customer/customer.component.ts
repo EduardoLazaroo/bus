@@ -13,33 +13,65 @@ import { Navbar } from '../../navbar/navbar.component';
 })
 export class CustomerComponent implements OnInit {
   customersPending: CompanyLinkResponseDTO[] = [];
+  customersLinked: CompanyLinkResponseDTO[] = [];
+  companyId!: number;
+
   constructor(
     private companyLinkService: CompanyLinkService,
     private location: Location
   ) {}
 
   ngOnInit(): void {
-    this.loadCustomersPending();
+    this.initData();
   }
 
-  backPage() {
-    // todo
+  backPage(): void {
     this.location.back();
   }
 
-  loadCustomersPending(): void {
-    this.companyLinkService.getPendingRequests().subscribe((res) => {
-      this.customersPending = res;
+  private initData(): void {
+    this.companyLinkService.getPendingRequests().subscribe({
+      next: (pending) => {
+        this.customersPending = pending;
+
+        if (pending.length > 0) {
+          this.companyId = pending[0].companyId;
+          this.loadUsersLinked();
+        } else {
+          this.loadLinkedFromApproved();
+        }
+      },
+    });
+  }
+
+  private loadLinkedFromApproved(): void {
+    this.companyLinkService.getMyLinks().subscribe({
+      next: (links) => {
+        if (links.length > 0) {
+          this.companyId = links[0].companyId;
+          this.loadUsersLinked();
+        }
+      },
+    });
+  }
+
+  loadUsersLinked(): void {
+    if (!this.companyId) return;
+
+    this.companyLinkService.getUsersLinkedToCompany(this.companyId).subscribe({
+      next: (res) => {
+        this.customersLinked = res;
+      },
     });
   }
 
   approve(linkId: number): void {
     this.companyLinkService.approveRequest(linkId).subscribe({
       next: () => {
-        // remove da lista após aprovação
         this.customersPending = this.customersPending.filter(
           (c) => c.id !== linkId
         );
+        this.loadUsersLinked();
       },
     });
   }
