@@ -2,7 +2,7 @@
 
 <div class="comp-with-nav">
   <!-- NO COMPANY -->
-  <div *ngIf="status === 'NO_COMPANY'">
+  <div *ngIf="status === 'NO_COMPANY'" class="no-company">
     <div *ngIf="step === 0" class="welcome-message">
       <img
         src="../../../../assets/imgs/register_imgone_client.png"
@@ -30,8 +30,55 @@
 
   <!-- PENDING -->
   <div *ngIf="status === 'PENDING'" class="pending">
-    <h3>Solicitação em análise</h3>
-    <p>Aguarde a aprovação da empresa.</p>
+    <h2>Bem vindo, {{ userName }}</h2>
+
+    <div class="section-main">
+      <div class="divider-top">
+        <span
+          >Aguardamos a aceitação da empresa para o vínculo. Se preferir, entre
+          em contato</span
+        >
+        <img
+          src="../../../../assets/imgs/telecommuting.png"
+          class="img-register"
+        />
+      </div>
+    </div>
+
+    <div class="content-sections">
+      <span>Fique por dentro</span>
+      <div class="section-one">
+        <div class="left">
+          <span class="title">Enquete</span>
+          <span>Não possui enquete por enquanto!.</span>
+        </div>
+        <div class="right">
+          <span class="title">Reclame aqui</span>
+          <span>Desejo registrar uma ocorrência.</span>
+        </div>
+      </div>
+      <div class="section-two">
+        <div>
+          <span class="title">Avisos</span>
+          <span>Você não tem avisos por enquanto!</span>
+        </div>
+      </div>
+
+      <span>Muito mais!</span>
+
+      <div class="section-three">
+        <div class="left">
+          <span class="title">Pagamento</span>
+          <span>Acompanhe sua vida finaceira por aqui.</span>
+        </div>
+        <div class="right">
+          <span class="title">Endereço</span>
+          <span
+            >Atualize seu endereço para otimizar o percurso do motorista..</span
+          >
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- APPROVED -->

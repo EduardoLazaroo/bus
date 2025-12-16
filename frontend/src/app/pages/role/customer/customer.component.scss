@@ -1,0 +1,69 @@
+.content-customer {
+  display: flex;
+  flex-direction: column;
+  padding: 32px;
+  gap: 1rem;
+
+  .profile-header {
+    display: flex;
+    justify-content: space-between;
+    width: -webkit-fill-available;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+
+    > :nth-child(1) {
+      justify-content: flex-start;
+    }
+
+    div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 33%;
+
+      button {
+        padding: 8px 16px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: rgb(190, 190, 190);
+        color: rgb(94 94 94);
+        border-radius: 56%;
+        width: 50px;
+        height: 50px;
+        border: 1px solid gray;
+      }
+    }
+
+  }
+
+  .card-customers {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgb(196, 224, 196);
+    padding: 1rem 0;
+    width: 100%;
+    border-radius: 5px;
+    border: none;
+
+    span {
+      color: gray;
+    }
+  }
+
+  .card-user {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgb(184, 184, 184);
+    padding: 1rem 0;
+    width: 100%;
+    border-radius: 5px;
+    border: none;
+
+    span {
+      color: gray;
+    }
+  }
+}

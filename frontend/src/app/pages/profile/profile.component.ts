@@ -32,6 +32,7 @@ export class ProfileComponent implements OnInit {
   }
 
   backPage() {
+    // todo
     this.location.back();
   }
 }

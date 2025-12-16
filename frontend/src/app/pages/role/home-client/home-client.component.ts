@@ -4,6 +4,7 @@ import { UserSelectCompanyComponent } from '../user-select-company/user-select-c
 import { Navbar } from '../../navbar/navbar.component';
 import { FinalRegistrationClientComponent } from '../final-registration-client/final-registration-client.component';
 import { CompanyLinkService } from '../../../core/services/companyLink.service';
+import { AuthService } from '../../../core/services/auth.service';
 export type ClientFlowStatus = 'NO_COMPANY' | 'PENDING' | 'APPROVED';
 
 @Component({
@@ -21,8 +22,14 @@ export type ClientFlowStatus = 'NO_COMPANY' | 'PENDING' | 'APPROVED';
 export class HomeClientComponent implements OnInit {
   status: ClientFlowStatus = 'NO_COMPANY';
   step = 0;
+  userName: string | null = null;
 
-  constructor(private companyLinkService: CompanyLinkService) {}
+  constructor(
+    private companyLinkService: CompanyLinkService,
+    private authService: AuthService
+  ) {
+    this.userName = this.authService.getUserName();
+  }
 
   ngOnInit(): void {
     this.resolveClientStatus();

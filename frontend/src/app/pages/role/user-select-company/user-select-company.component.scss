@@ -5,4 +5,22 @@
   gap: 1rem;
   padding: 32px;
 
+  .finish-update {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding: 32px;
+
+    .img-register {
+      width: 250px;
+    }
+
+    .bottom-confirm {
+      margin-bottom: 10px;
+      display: flex;
+      gap: 1rem;
+      flex-direction: column;
+    }
+  }
 }
