@@ -1,22 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+        xsi:schemaLocation="
+            http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
     <changeSet id="1" author="eduardo">
+
+        <!-- ===================== USERS ===================== -->
         <createTable tableName="users">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
+
             <column name="name" type="VARCHAR(255)"/>
             <column name="email" type="VARCHAR(255)">
                 <constraints nullable="false" unique="true"/>
             </column>
             <column name="password" type="VARCHAR(255)"/>
             <column name="role" type="VARCHAR(50)"/>
+
             <column name="phone" type="VARCHAR(20)"/>
             <column name="profile_image" type="VARCHAR(500)"/>
+
             <column name="cep" type="VARCHAR(15)"/>
             <column name="logradouro" type="VARCHAR(255)"/>
             <column name="bairro" type="VARCHAR(255)"/>
@@ -24,27 +31,32 @@
             <column name="numero" type="VARCHAR(20)"/>
         </createTable>
 
+        <!-- ===================== COMPANIES ===================== -->
         <createTable tableName="companies">
             <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints primaryKey="true" />
+                <constraints primaryKey="true"/>
             </column>
-            <column name="company_name" type="VARCHAR(255)" />
-            <column name="cnpj" type="VARCHAR(50)" />
-            <column name="country" type="VARCHAR(100)" />
-            <column name="state" type="VARCHAR(100)" />
-            <column name="city" type="VARCHAR(150)" />
-            <column name="district" type="VARCHAR(150)" />
-            <column name="street" type="VARCHAR(255)" />
-            <column name="phone" type="VARCHAR(50)" />
-            <column name="zip_code" type="VARCHAR(20)" />
-            <column name="number" type="VARCHAR(20)" />
-            <column name="complement" type="VARCHAR(255)" />
-            <column name="email" type="VARCHAR(150)" />
-            <column name="payment_type" type="VARCHAR(100)" />
-            <column name="payment_info" type="VARCHAR(255)" />
-            <column name="recipient_name" type="VARCHAR(255)" />
-            <column name="mobile_phone" type="VARCHAR(50)" />
-            <column name="unit_type" type="VARCHAR(100)" />
+
+            <column name="company_name" type="VARCHAR(255)"/>
+            <column name="cnpj" type="VARCHAR(50)"/>
+
+            <column name="country" type="VARCHAR(100)"/>
+            <column name="state" type="VARCHAR(100)"/>
+            <column name="city" type="VARCHAR(150)"/>
+            <column name="district" type="VARCHAR(150)"/>
+            <column name="street" type="VARCHAR(255)"/>
+            <column name="number" type="VARCHAR(20)"/>
+            <column name="complement" type="VARCHAR(255)"/>
+
+            <column name="phone" type="VARCHAR(50)"/>
+            <column name="mobile_phone" type="VARCHAR(50)"/>
+            <column name="email" type="VARCHAR(150)"/>
+
+            <column name="payment_type" type="VARCHAR(100)"/>
+            <column name="payment_info" type="VARCHAR(255)"/>
+            <column name="recipient_name" type="VARCHAR(255)"/>
+
+            <column name="unit_type" type="VARCHAR(100)"/>
 
             <column name="status" type="VARCHAR(50)" defaultValue="PENDING">
                 <constraints nullable="false"/>
@@ -53,23 +65,67 @@
             <column name="owner_id" type="BIGINT"/>
         </createTable>
 
+        <!-- ===================== COMPANY LINKS ===================== -->
         <createTable tableName="company_links">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
+
             <column name="status" type="VARCHAR(50)" defaultValue="PENDING"/>
             <column name="role_in_company" type="VARCHAR(50)"/>
+
             <column name="user_id" type="BIGINT"/>
             <column name="company_id" type="BIGINT"/>
         </createTable>
 
+        <!-- ===================== DRIVER PROFILES ===================== -->
+        <createTable tableName="driver_profiles">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="cpf" type="VARCHAR(20)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="rg" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="cnh_number" type="VARCHAR(30)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="cnh_category" type="VARCHAR(5)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="cnh_expiration_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="cnh_image" type="VARCHAR(500)"/>
+
+            <column name="active" type="BOOLEAN" defaultValueBoolean="true"/>
+
+            <column name="created_at" type="TIMESTAMP"
+                    defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+
+        <!-- ===================== VEHICLES ===================== -->
         <createTable tableName="vehicles">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
+
             <column name="model" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
+
             <column name="license_plate" type="VARCHAR(50)">
                 <constraints nullable="false" unique="true"/>
             </column>
@@ -78,6 +134,7 @@
             <column name="type" type="VARCHAR(50)"/>
             <column name="year" type="INT"/>
             <column name="color" type="VARCHAR(50)"/>
+
             <column name="active" type="BOOLEAN" defaultValueBoolean="true"/>
 
             <column name="company_link_id" type="BIGINT">
@@ -85,19 +142,80 @@
             </column>
         </createTable>
 
-
+        <!-- ===================== JOURNEYS ===================== -->
         <createTable tableName="journeys">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
+
             <column name="name" type="VARCHAR(255)"/>
             <column name="description" type="VARCHAR(500)"/>
+
             <column name="status" type="VARCHAR(50)" defaultValue="PENDING">
                 <constraints nullable="false"/>
             </column>
+
             <column name="company_id" type="BIGINT"/>
             <column name="driver_id" type="BIGINT"/>
             <column name="vehicle_id" type="BIGINT"/>
         </createTable>
+
+        <!-- ===================== FOREIGN KEYS ===================== -->
+
+        <addForeignKeyConstraint
+                baseTableName="companies"
+                baseColumnNames="owner_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_company_owner"/>
+
+        <addForeignKeyConstraint
+                baseTableName="company_links"
+                baseColumnNames="user_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_company_link_user"/>
+
+        <addForeignKeyConstraint
+                baseTableName="company_links"
+                baseColumnNames="company_id"
+                referencedTableName="companies"
+                referencedColumnNames="id"
+                constraintName="fk_company_link_company"/>
+
+        <addForeignKeyConstraint
+                baseTableName="driver_profiles"
+                baseColumnNames="user_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_driver_profile_user"/>
+
+        <addForeignKeyConstraint
+                baseTableName="vehicles"
+                baseColumnNames="company_link_id"
+                referencedTableName="company_links"
+                referencedColumnNames="id"
+                constraintName="fk_vehicle_company_link"/>
+
+        <addForeignKeyConstraint
+                baseTableName="journeys"
+                baseColumnNames="company_id"
+                referencedTableName="companies"
+                referencedColumnNames="id"
+                constraintName="fk_journey_company"/>
+
+        <addForeignKeyConstraint
+                baseTableName="journeys"
+                baseColumnNames="driver_id"
+                referencedTableName="company_links"
+                referencedColumnNames="id"
+                constraintName="fk_journey_driver"/>
+
+        <addForeignKeyConstraint
+                baseTableName="journeys"
+                baseColumnNames="vehicle_id"
+                referencedTableName="vehicles"
+                referencedColumnNames="id"
+                constraintName="fk_journey_vehicle"/>
     </changeSet>
 </databaseChangeLog>
