@@ -44,6 +44,10 @@ export class HomeOwnerComponent implements OnInit {
     this.router.navigate(['/customer']);
   }
 
+  goToVehicle() {
+    this.router.navigate(['/vehicle']);
+  }
+
   loadCompanyStatus() {
     this.companyService.getCompaniesByOwner().subscribe({
       next: (companies) => {

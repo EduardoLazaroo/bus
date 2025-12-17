@@ -1,0 +1,40 @@
+<app-navbar></app-navbar>
+
+<div class="comp-with-nav">
+  <div class="content-vehicle">
+    <div class="profile-header">
+      <div (click)="backPage()">
+        <button><</button>
+      </div>
+      <div>
+        <h4>Veiculo</h4>
+      </div>
+      <div></div>
+    </div>
+
+    <div class="list-vehicle">
+      <div class="list-top">
+        <span>{{ vehicles.length }} registros</span>
+        <button class="btn btn-primary" (click)="goToUpdate()">Novo</button>
+      </div>
+
+      <div class="head-table">
+        <span>Placa</span>
+        <span>Tipo</span>
+      </div>
+
+      <div class="list-bottom">
+        <div class="vehicle-item" *ngFor="let vehicle of vehicles">
+          <div class="vehicle-info">
+            <strong>{{ vehicle.licensePlate }}</strong>
+            <small *ngIf="!vehicle.active">Desativado</small>
+          </div>
+
+          <div class="vehicle-type">
+            {{ vehicle.type }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

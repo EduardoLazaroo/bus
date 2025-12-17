@@ -1,0 +1,54 @@
+<app-navbar></app-navbar>
+
+<div class="comp-with-nav">
+  <div class="content-vehicle">
+    <div class="profile-header">
+      <div (click)="backPage()">
+        <button class="back-btn"><</button>
+      </div>
+      <div>
+        <h4>Novo Veículo</h4>
+      </div>
+      <div></div>
+    </div>
+
+    <form class="vehicle-form" (ngSubmit)="createVehicle()">
+      <div class="input-group">
+        <label>Modelo</label>
+        <input type="text" [(ngModel)]="vehicle.model" name="model" required />
+      </div>
+
+      <div class="input-group">
+        <label>Placa</label>
+        <input
+          type="text"
+          [(ngModel)]="vehicle.licensePlate"
+          name="licensePlate"
+          required
+        />
+      </div>
+
+      <div class="input-group">
+        <label>Tipo</label>
+        <input type="text" [(ngModel)]="vehicle.type" name="type" required />
+      </div>
+
+      <div class="input-group">
+        <label>Capacidade</label>
+        <input type="number" [(ngModel)]="vehicle.capacity" name="capacity" />
+      </div>
+
+      <div class="input-group">
+        <label>Ano</label>
+        <input type="number" [(ngModel)]="vehicle.year" name="year" />
+      </div>
+
+      <div class="input-group">
+        <label>Cor</label>
+        <input type="text" [(ngModel)]="vehicle.color" name="color" />
+      </div>
+
+      <button type="submit" class="btn btn-primary">Salvar</button>
+    </form>
+  </div>
+</div>

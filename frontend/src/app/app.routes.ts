@@ -10,6 +10,8 @@ import { HomeDriverComponent } from './pages/role/home-driver/home-driver.compon
 import { FinalRegistrationOwnerComponent } from './pages/role/final-registration-owner/final-registration-owner.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { CustomerComponent } from './pages/role/customer/customer.component';
+import { VehicleComponent } from './pages/vehicle/list/vehicle.component';
+import { VehicleUpdateComponent } from './pages/vehicle/update/vehicle-update.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -44,6 +46,18 @@ export const routes: Routes = [
     canActivate: [RoleGuard],
     data: { roles: ['OWNER'] },
   },
+  {
+    path: 'vehicle',
+    component: VehicleComponent,
+    canActivate: [RoleGuard],
+    data: { roles: ['OWNER'] },
+  },
+  {
+    path: 'vehicle-update',
+    component: VehicleUpdateComponent,
+    canActivate: [RoleGuard],
+    data: { roles: ['OWNER'] },
+  },
 
   // ADMIN
   {
@@ -52,7 +66,7 @@ export const routes: Routes = [
     canActivate: [RoleGuard],
     data: { roles: ['ADMIN'] },
   },
-  
+
   // DRIVER
   {
     path: 'home-driver',

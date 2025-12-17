@@ -167,6 +167,44 @@ label {
   border-bottom: 1px solid #ddd;
 }
 
+/* ==============================
+   All
+============================== */
+
 .comp-with-nav {
   height: calc(100vh - 60px);
+}
+
+
+// toDo
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  width: -webkit-fill-available;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+
+  > :nth-child(1) {
+    justify-content: flex-start;
+  }
+
+  div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 33%;
+
+    button {
+      padding: 8px 16px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: rgb(190, 190, 190);
+      color: rgb(94 94 94);
+      border-radius: 56%;
+      width: 50px;
+      height: 50px;
+      border: 1px solid gray;
+    }
+  }
 }
