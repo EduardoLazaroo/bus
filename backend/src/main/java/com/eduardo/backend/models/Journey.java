@@ -1,14 +1,14 @@
 package com.eduardo.backend.models;
 
 import com.eduardo.backend.enums.JourneyStatus;
-
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.List;
 
 @Entity
 @Table(name = "journeys")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -40,8 +40,10 @@ public class Journey {
         joinColumns = @JoinColumn(name = "journey_id"),
         inverseJoinColumns = @JoinColumn(name = "client_id")
     )
-    private List<User> clients; 
+    private List<User> clients;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private JourneyStatus status = JourneyStatus.PENDING;
 }

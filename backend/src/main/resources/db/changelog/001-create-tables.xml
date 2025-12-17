@@ -46,7 +46,10 @@
             <column name="mobile_phone" type="VARCHAR(50)" />
             <column name="unit_type" type="VARCHAR(100)" />
 
-            <column name="status" type="VARCHAR(50)" defaultValue="PENDING" />
+            <column name="status" type="VARCHAR(50)" defaultValue="PENDING">
+                <constraints nullable="false"/>
+            </column>
+
             <column name="owner_id" type="BIGINT"/>
         </createTable>
 
@@ -64,10 +67,24 @@
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="model" type="VARCHAR(255)"/>
-            <column name="license_plate" type="VARCHAR(50)"/>
-            <column name="company_id" type="BIGINT"/>
+            <column name="model" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="license_plate" type="VARCHAR(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="capacity" type="INT"/>
+            <column name="type" type="VARCHAR(50)"/>
+            <column name="year" type="INT"/>
+            <column name="color" type="VARCHAR(50)"/>
+            <column name="active" type="BOOLEAN" defaultValueBoolean="true"/>
+
+            <column name="company_link_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
+
 
         <createTable tableName="journeys">
             <column name="id" type="BIGINT" autoIncrement="true">
@@ -75,7 +92,9 @@
             </column>
             <column name="name" type="VARCHAR(255)"/>
             <column name="description" type="VARCHAR(500)"/>
-            <column name="status" type="VARCHAR(50)"/>
+            <column name="status" type="VARCHAR(50)" defaultValue="PENDING">
+                <constraints nullable="false"/>
+            </column>
             <column name="company_id" type="BIGINT"/>
             <column name="driver_id" type="BIGINT"/>
             <column name="vehicle_id" type="BIGINT"/>

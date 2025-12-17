@@ -8,7 +8,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "companies")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -40,19 +41,14 @@ public class Company {
     private String recipientName; // destinatário
     private String unitType;      // tipo unidade
 
-
+    @Builder.Default
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private CompanyStatus status = CompanyStatus.PENDING;
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private User owner;
-
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    private List<Vehicle> vehicles;
-
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    private List<Journey> journeys;
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     private List<CompanyLink> companyLinks;
