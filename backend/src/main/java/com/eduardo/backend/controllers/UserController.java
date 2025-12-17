@@ -47,7 +47,7 @@ public class UserController {
     }
 
     // GET ME SEGURO
-    @GetMapping("/me")
+    @GetMapping("/mine")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserDTO> getCurrentUser() {
         String email = SecurityUtils.getCurrentUserEmailOrThrow();
