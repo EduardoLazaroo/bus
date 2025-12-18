@@ -18,4 +18,6 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
 
     // Lista apenas veículos ativos de um vínculo
     List<Vehicle> findByCompanyLinkIdAndActiveTrue(Long companyLinkId);
+
+    boolean existsByCompanyLinkIdAndActiveTrue(Long companyLinkId);
 }

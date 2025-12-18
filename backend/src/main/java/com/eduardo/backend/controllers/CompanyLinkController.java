@@ -1,6 +1,7 @@
 package com.eduardo.backend.controllers;
 
 import com.eduardo.backend.dtos.CompanyLinkRequestDTO;
+import com.eduardo.backend.dtos.CompanyLinkRequirementsStatusDTO;
 import com.eduardo.backend.dtos.CompanyLinkResponseDTO;
 import com.eduardo.backend.services.CompanyLinkService;
 import jakarta.validation.Valid;
@@ -80,5 +81,10 @@ public class CompanyLinkController {
         return ResponseEntity.ok(
                 companyLinkService.getUsersLinkedToCompany(companyId)
         );
+    }
+
+    @GetMapping("/requirements")
+    public ResponseEntity<CompanyLinkRequirementsStatusDTO> checkRequirements() {
+        return ResponseEntity.ok(companyLinkService.checkRequirements());
     }
 }

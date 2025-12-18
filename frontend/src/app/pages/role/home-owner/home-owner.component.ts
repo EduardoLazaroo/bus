@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { CompanyService } from '../../../core/services/company.service';
+import { CompanyLinkService } from '../../../core/services/companyLink.service';
+import { CompanyLinkRequirementsDTO } from '../../../core/models/company-link-requirements.model';
 import { CompanyActivationComponent } from '../company-activation/company-activation.component';
 import { CompanyDTO } from '../../../core/models/company.model';
 import { Navbar } from '../../navbar/navbar.component';
@@ -22,10 +24,15 @@ export class HomeOwnerComponent implements OnInit {
   status: CompanyStatus = 'NO_COMPANY'; // estado inicial padrão
   userName: string | null = null;
   isAdvancedConfig: boolean = false;
+  hasClient: boolean = false;
+  hasDriver: boolean = false;
+  hasVehicle: boolean = false;
+  canCreateJourney: boolean = false;
 
   constructor(
     private authService: AuthService,
     private companyService: CompanyService,
+    private companyLinkService: CompanyLinkService,
     private router: Router
   ) {
     this.userRole = this.authService.getUserRole();
@@ -34,6 +41,7 @@ export class HomeOwnerComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCompanyStatus();
+    this.loadRequirements();
   }
 
   goToAdvancedConf() {
@@ -74,13 +82,25 @@ export class HomeOwnerComponent implements OnInit {
     });
   }
 
+  loadRequirements() {
+    this.companyLinkService.getRequirements().subscribe({
+      next: (res: CompanyLinkRequirementsDTO) => {
+        this.hasClient = res.hasClient;
+        this.hasDriver = res.hasDriver;
+        this.hasVehicle = res.hasVehicle;
+        this.canCreateJourney = res.canCreateJourney;
+      },
+      error: () => {
+        this.hasClient = false;
+        this.hasDriver = false;
+        this.hasVehicle = false;
+        this.canCreateJourney = false;
+      },
+    });
+  }
+
   companyCreated() {
     this.status = 'PENDING';
     this.loadCompanyStatus();
-  }
-
-  logout() {
-    this.authService.logout();
-    this.router.navigate(['/login']);
   }
 }

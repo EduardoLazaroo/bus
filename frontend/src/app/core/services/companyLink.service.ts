@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CompanyLinkResponseDTO } from '../models/company-link.model';
+import { CompanyLinkRequirementsDTO } from '../models/company-link-requirements.model';
 export type CompanyLinkRole = 'CLIENT' | 'DRIVER';
 
 @Injectable({ providedIn: 'root' })
@@ -54,5 +55,10 @@ export class CompanyLinkService {
     return this.http.get<CompanyLinkResponseDTO[]>(
       `${this.apiUrl}/company/${companyId}/users`
     );
+  }
+
+  // Requisitos para criação de jornada
+  getRequirements(): Observable<CompanyLinkRequirementsDTO> {
+    return this.http.get<CompanyLinkRequirementsDTO>(`${this.apiUrl}/requirements`);
   }
 }

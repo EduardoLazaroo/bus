@@ -113,35 +113,40 @@
         </div>
       </div>
       <div class="card-one" (click)="goToVehicle()">
-        <div class="left left-able">
+        <div [ngClass]="{ 'left': true, 'left-able': hasVehicle, 'left-disable': !hasVehicle }">
           <img src="assets/imgs/mini-bus.png" alt="mini onibus" />
           <span class="title">Cadastrar Veículo</span>
           <span>Cadastro de veiculo, tenha em mãos todos documentos</span>
         </div>
-        <div class="right right-able"></div>
+        <div [ngClass]="{ 'right': true, 'right-able': hasVehicle, 'right-disable': !hasVehicle }"></div>
       </div>
       <div class="card-two" (click)="goToCustomer()">
-        <div class="left left-able">
+        <div [ngClass]="{ 'left': true, 'left-able': hasClient, 'left-disable': !hasClient }">
           <img src="assets/imgs/mini-user.png" alt="mini onibus" />
           <span class="title">Adicionar cliente</span>
           <span>Pelo menos um cliente para partiipar do transporte</span>
         </div>
-        <div class="right right-able"></div>
+        <div [ngClass]="{ 'right': true, 'right-able': hasClient, 'right-disable': !hasClient }"></div>
       </div>
       <div class="card-three">
-        <div class="left left-disable">
+        <div [ngClass]="{ 'left': true, 'left-able': hasDriver, 'left-disable': !hasDriver }">
           <img src="assets/imgs/mini-driver.png" alt="mini onibus" />
           <span class="title">Vincular motorista</span>
           <span>Cadastre os motoristas que vão dirigir os veículos</span>
         </div>
-        <div class="right right-disable"></div>
+        <div [ngClass]="{ 'right': true, 'right-able': hasDriver, 'right-disable': !hasDriver }"></div>
       </div>
     </div>
 
     <div class="create-journey">
       <span class="title">Minha primeira jornada!</span>
       <span>Finalize os cadastros acima e crie sua jornada!</span>
-      <button class="btn btn-disabled">Criar jornada!</button>
+      <button
+        [ngClass]="canCreateJourney ? 'btn btn-enabled' : 'btn btn-disabled'"
+        [disabled]="!canCreateJourney"
+      >
+        Criar jornada!
+      </button>
     </div>
   </div>
 </div>

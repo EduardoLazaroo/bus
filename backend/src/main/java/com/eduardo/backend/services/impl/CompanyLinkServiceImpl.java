@@ -1,6 +1,7 @@
 package com.eduardo.backend.services.impl;
 
 import com.eduardo.backend.dtos.CompanyLinkRequestDTO;
+import com.eduardo.backend.dtos.CompanyLinkRequirementsStatusDTO;
 import com.eduardo.backend.dtos.CompanyLinkResponseDTO;
 import com.eduardo.backend.enums.CompanyStatus;
 import com.eduardo.backend.enums.LinkStatus;
@@ -10,10 +11,7 @@ import com.eduardo.backend.exceptions.ResourceNotFoundException;
 import com.eduardo.backend.models.Company;
 import com.eduardo.backend.models.CompanyLink;
 import com.eduardo.backend.models.User;
-import com.eduardo.backend.repositories.CompanyLinkRepository;
-import com.eduardo.backend.repositories.CompanyRepository;
-import com.eduardo.backend.repositories.DriverProfileRepository;
-import com.eduardo.backend.repositories.UserRepository;
+import com.eduardo.backend.repositories.*;
 import com.eduardo.backend.services.CompanyLinkService;
 import com.eduardo.backend.utils.SecurityUtils;
 import org.springframework.stereotype.Service;
@@ -33,17 +31,20 @@ public class CompanyLinkServiceImpl implements CompanyLinkService {
     private final CompanyLinkRepository companyLinkRepository;
     private final UserRepository userRepository;
     private final DriverProfileRepository driverProfileRepository;
+    private final VehicleRepository vehicleRepository;
 
     public CompanyLinkServiceImpl(
             CompanyRepository companyRepository,
             CompanyLinkRepository companyLinkRepository,
             UserRepository userRepository,
-            DriverProfileRepository driverProfileRepository
+            DriverProfileRepository driverProfileRepository,
+            VehicleRepository vehicleRepository
     ) {
         this.companyRepository = companyRepository;
         this.companyLinkRepository = companyLinkRepository;
         this.userRepository = userRepository;
         this.driverProfileRepository = driverProfileRepository;
+        this.vehicleRepository = vehicleRepository;
     }
 
     /**
@@ -165,6 +166,41 @@ public class CompanyLinkServiceImpl implements CompanyLinkService {
                 .stream()
                 .map(this::mapToDTO)
                 .toList();
+    }
+
+    @Override
+    public CompanyLinkRequirementsStatusDTO checkRequirements() {
+
+        var user = SecurityUtils.getCurrentUserOrThrow(userRepository);
+
+        CompanyLink companyLink = companyLinkRepository
+                .findByUserIdAndStatus(user.getId(), LinkStatus.APPROVED)
+                .orElseThrow(() ->
+                        new BadRequestException("Usuário não possui vínculo aprovado com empresa")
+                );
+
+        Long companyLinkId = companyLink.getId();
+
+        Long companyId = companyLink.getCompany().getId();
+
+        var approvedLinks = companyLinkRepository.findByCompanyIdAndStatus(companyId, LinkStatus.APPROVED);
+
+        boolean hasClient = approvedLinks.stream()
+                .anyMatch(l -> l.getRoleInCompany() == UserRole.CLIENT);
+
+        boolean hasDriver = approvedLinks.stream()
+                .anyMatch(l -> l.getRoleInCompany() == UserRole.DRIVER);
+
+        boolean hasVehicle = vehicleRepository.existsByCompanyLinkIdAndActiveTrue(
+                companyLinkId
+        );
+
+        return CompanyLinkRequirementsStatusDTO.builder()
+                .hasClient(hasClient)
+                .hasDriver(hasDriver)
+                .hasVehicle(hasVehicle)
+                .canCreateJourney(hasClient && hasDriver && hasVehicle)
+                .build();
     }
 
     /**

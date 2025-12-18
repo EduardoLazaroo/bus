@@ -1,6 +1,7 @@
 package com.eduardo.backend.services;
 
 import com.eduardo.backend.dtos.CompanyLinkRequestDTO;
+import com.eduardo.backend.dtos.CompanyLinkRequirementsStatusDTO;
 import com.eduardo.backend.dtos.CompanyLinkResponseDTO;
 
 import java.util.List;
@@ -28,4 +29,6 @@ public interface CompanyLinkService {
 
     // OWNER lista usuários aprovados de uma empresa
     List<CompanyLinkResponseDTO> getUsersLinkedToCompany(Long companyId);
+
+    CompanyLinkRequirementsStatusDTO checkRequirements();
 }
