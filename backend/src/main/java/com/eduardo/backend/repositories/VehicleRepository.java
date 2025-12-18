@@ -7,15 +7,15 @@ import java.util.List;
 
 public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
 
-    // placa única
+    // Verifica se já existe veículo com a mesma placa
     boolean existsByLicensePlate(String licensePlate);
 
-    // placa única ao atualizar
+    // Verifica placa duplicada ignorando o próprio registro (update)
     boolean existsByLicensePlateAndIdNot(String licensePlate, Long id);
 
-    // veículos de uma empresa
+    // Lista todos os veículos de um vínculo empresa-usuário
     List<Vehicle> findByCompanyLinkId(Long companyLinkId);
 
-    // veículos ativos de uma empresa
+    // Lista apenas veículos ativos de um vínculo
     List<Vehicle> findByCompanyLinkIdAndActiveTrue(Long companyLinkId);
 }

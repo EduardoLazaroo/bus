@@ -1,5 +1,6 @@
 package com.eduardo.backend.services.impl;
 
+import com.eduardo.backend.dtos.CompanyLinkRequestDTO;
 import com.eduardo.backend.dtos.CompanyLinkResponseDTO;
 import com.eduardo.backend.enums.CompanyStatus;
 import com.eduardo.backend.enums.LinkStatus;
@@ -11,6 +12,7 @@ import com.eduardo.backend.models.CompanyLink;
 import com.eduardo.backend.models.User;
 import com.eduardo.backend.repositories.CompanyLinkRepository;
 import com.eduardo.backend.repositories.CompanyRepository;
+import com.eduardo.backend.repositories.DriverProfileRepository;
 import com.eduardo.backend.repositories.UserRepository;
 import com.eduardo.backend.services.CompanyLinkService;
 import com.eduardo.backend.utils.SecurityUtils;
@@ -20,24 +22,33 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Implementação das regras de vínculo entre usuários e empresas.
+ * Toda validação de permissão e status acontece aqui.
+ */
 @Service
 public class CompanyLinkServiceImpl implements CompanyLinkService {
 
     private final CompanyRepository companyRepository;
     private final CompanyLinkRepository companyLinkRepository;
     private final UserRepository userRepository;
+    private final DriverProfileRepository driverProfileRepository;
 
     public CompanyLinkServiceImpl(
             CompanyRepository companyRepository,
             CompanyLinkRepository companyLinkRepository,
-            UserRepository userRepository
+            UserRepository userRepository,
+            DriverProfileRepository driverProfileRepository
     ) {
         this.companyRepository = companyRepository;
         this.companyLinkRepository = companyLinkRepository;
         this.userRepository = userRepository;
+        this.driverProfileRepository = driverProfileRepository;
     }
 
-    // 1. Lista empresas aprovadas para o CLIENT solicitar
+    /**
+     * Lista empresas aprovadas que o usuário ainda não solicitou vínculo.
+     */
     @Override
     public List<CompanyLinkResponseDTO> getAvailableCompanies() {
         User user = SecurityUtils.getCurrentUserOrThrow(userRepository);
@@ -56,20 +67,22 @@ public class CompanyLinkServiceImpl implements CompanyLinkService {
                 ).collect(Collectors.toList());
     }
 
-    // 2. CLIENT solicita vínculo
+    /**
+     * Cria uma solicitação de vínculo para o CLIENT.
+     */
     @Override
     @Transactional
-    public CompanyLinkResponseDTO requestAccess(Long companyId) {
+    public CompanyLinkResponseDTO requestAccess(CompanyLinkRequestDTO dto) {
         User user = SecurityUtils.getCurrentUserOrThrow(userRepository);
 
-        Company company = companyRepository.findById(companyId)
+        Company company = companyRepository.findById(dto.getCompanyId())
                 .orElseThrow(() -> new ResourceNotFoundException("Empresa não encontrada"));
 
         if (company.getStatus() != CompanyStatus.APPROVED) {
             throw new BadRequestException("Empresa não está aprovada ainda");
         }
 
-        if (companyLinkRepository.existsByUserIdAndCompanyId(user.getId(), companyId)) {
+        if (companyLinkRepository.existsByUserIdAndCompanyId(user.getId(), company.getId())) {
             throw new BadRequestException("Você já solicitou acesso a esta empresa");
         }
 
@@ -77,6 +90,7 @@ public class CompanyLinkServiceImpl implements CompanyLinkService {
                 .user(user)
                 .company(company)
                 .status(LinkStatus.PENDING)
+                .roleInCompany(dto.getRequestedRole())
                 .build();
 
         companyLinkRepository.save(link);
@@ -84,18 +98,22 @@ public class CompanyLinkServiceImpl implements CompanyLinkService {
         return mapToDTO(link);
     }
 
-    // CLIENT vê seus vínculos
+    /**
+     * CLIENT visualiza todos os seus vínculos.
+     */
     @Override
     public List<CompanyLinkResponseDTO> getMyLinks() {
-    User user = SecurityUtils.getCurrentUserOrThrow(userRepository);
+        User user = SecurityUtils.getCurrentUserOrThrow(userRepository);
 
-    return companyLinkRepository.findByUserId(user.getId())
-            .stream()
-            .map(this::mapToDTO)
-            .toList();
+        return companyLinkRepository.findByUserId(user.getId())
+                .stream()
+                .map(this::mapToDTO)
+                .toList();
     }
 
-    // 3. OWNER vê solicitações pendentes
+    /**
+     * OWNER visualiza solicitações pendentes das suas empresas.
+     */
     @Override
     public List<CompanyLinkResponseDTO> getPendingRequestsForOwner() {
         User owner = SecurityUtils.getCurrentUserOrThrow(userRepository);
@@ -107,7 +125,9 @@ public class CompanyLinkServiceImpl implements CompanyLinkService {
                 .collect(Collectors.toList());
     }
 
-    // 4. OWNER aprova
+    /**
+     * OWNER aprova uma solicitação de vínculo.
+     */
     @Override
     @Transactional
     public CompanyLinkResponseDTO approve(Long linkId) {
@@ -121,12 +141,14 @@ public class CompanyLinkServiceImpl implements CompanyLinkService {
         }
 
         link.setStatus(LinkStatus.APPROVED);
-        link.setRoleInCompany(UserRole.CLIENT);
         companyLinkRepository.save(link);
 
         return mapToDTO(link);
     }
-    
+
+    /**
+     * OWNER lista usuários aprovados vinculados a uma empresa.
+     */
     @Override
     public List<CompanyLinkResponseDTO> getUsersLinkedToCompany(Long companyId) {
         User owner = SecurityUtils.getCurrentUserOrThrow(userRepository);
@@ -145,6 +167,9 @@ public class CompanyLinkServiceImpl implements CompanyLinkService {
                 .toList();
     }
 
+    /**
+     * Converte entidade em DTO de resposta.
+     */
     private CompanyLinkResponseDTO mapToDTO(CompanyLink link) {
         return CompanyLinkResponseDTO.builder()
                 .id(link.getId())

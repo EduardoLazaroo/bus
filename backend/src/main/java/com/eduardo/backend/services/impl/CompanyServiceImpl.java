@@ -23,6 +23,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Implementação das regras de negócio
+ * relacionadas às empresas.
+ */
 @Service
 public class CompanyServiceImpl implements CompanyService {
 
@@ -40,7 +44,10 @@ public class CompanyServiceImpl implements CompanyService {
         this.companyLinkRepository = companyLinkRepository;
     }
 
-    // Cria a empresa garantindo que o usuário logado é um OWNER.
+    /**
+     * Cria uma empresa garantindo que o usuário logado seja OWNER.
+     * A empresa nasce como PENDING.
+     */
     @Override
     @Transactional
     public CompanyResponseDTO createCompany(CompanyCreateDTO dto) {
@@ -77,7 +84,10 @@ public class CompanyServiceImpl implements CompanyService {
         return mapToDTO(saved);
     }
 
-    // Atualiza a empresa garantindo que quem está editando é o OWNER.
+    /**
+     * Atualiza dados da empresa.
+     * Apenas o OWNER da empresa pode editar.
+     */
     @Override
     @Transactional
     public CompanyResponseDTO updateCompany(Long companyId, CompanyCreateDTO dto) {
@@ -113,6 +123,9 @@ public class CompanyServiceImpl implements CompanyService {
         return mapToDTO(company);
     }
 
+    /**
+     * ADMIN lista empresas pendentes de aprovação.
+     */
     @Override
     public List<CompanyResponseDTO> getPendingCompanies() {
         return companyRepository.findByStatus(CompanyStatus.PENDING)
@@ -121,7 +134,10 @@ public class CompanyServiceImpl implements CompanyService {
                 .collect(Collectors.toList());
     }
 
-    // Aprova ou rejeita empresa E cria automaticamente o company_link
+    /**
+     * ADMIN aprova ou rejeita uma empresa.
+     * Se aprovada, cria automaticamente o vínculo OWNER ↔ COMPANY.
+     */
     @Override
     @Transactional
     public CompanyResponseDTO approveOrRejectCompany(Long companyId, CompanyApproveDTO dto) {
@@ -132,7 +148,7 @@ public class CompanyServiceImpl implements CompanyService {
         if (dto.getApprove() != null && dto.getApprove()) {
 
             company.setStatus(CompanyStatus.APPROVED);
-            // Se for aprovado e ainda não existir o vínculo, cria
+
             CompanyLink link = CompanyLink.builder()
                     .roleInCompany(UserRole.OWNER)
                     .user(company.getOwner())
@@ -142,7 +158,6 @@ public class CompanyServiceImpl implements CompanyService {
 
             companyLinkRepository.save(link);
 
-
         } else {
             company.setStatus(CompanyStatus.REJECTED);
         }
@@ -151,6 +166,9 @@ public class CompanyServiceImpl implements CompanyService {
         return mapToDTO(company);
     }
 
+    /**
+     * OWNER lista todas as empresas que ele é dono.
+     */
     @Override
     public List<CompanyResponseDTO> getCompaniesByOwner() {
         User owner = SecurityUtils.getCurrentUserOrThrow(userRepository);
@@ -162,6 +180,9 @@ public class CompanyServiceImpl implements CompanyService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Busca empresa por ID.
+     */
     @Override
     public CompanyResponseDTO getCompany(Long companyId) {
 
@@ -171,6 +192,9 @@ public class CompanyServiceImpl implements CompanyService {
         return mapToDTO(company);
     }
 
+    /**
+     * Converte entidade Company em DTO de resposta.
+     */
     private CompanyResponseDTO mapToDTO(Company c) {
 
         Long ownerId = c.getOwner() != null ? c.getOwner().getId() : null;

@@ -1,10 +1,82 @@
-<div class="home-container">
-  <h2>Bem-vindo à Home!</h2>
-  <p>Sua role atual é: <strong>{{ userRole }}</strong></p>
+<app-navbar></app-navbar>
 
-  <div>
-    <p>Você está na área do usuário.</p>
+<div class="comp-with-nav">
+  <!-- NO COMPANY -->
+  <div *ngIf="status === 'NO_COMPANY'" class="no-company">
+    <div *ngIf="step === 0" class="welcome-message">
+      <img
+        src="../../../../assets/imgs/register_imgone_client.png"
+        class="img-register"
+      />
+      <div class="bottom-confirm">
+        <h2>Finalize seu cadastro</h2>
+        <span>
+          Para fazer parte do fretado você precisa concluir seu cadastro.
+        </span>
+        <button class="btn btn-primary" (click)="step = 1">Próximo</button>
+      </div>
+    </div>
+
+    <div *ngIf="step === 1">
+      <app-final-registration-client (userActivated)="onUserActivated()">
+      </app-final-registration-client>
+    </div>
+
+    <div *ngIf="step === 2">
+      <app-user-select-company (requestSent)="status = 'PENDING'">
+      </app-user-select-company>
+    </div>
   </div>
 
-  <button (click)="logout()">Sair</button>
+  <!-- PENDING -->
+  <div *ngIf="status === 'PENDING'" class="pending">
+    <h2>Bem vindo, {{ userName }}</h2>
+
+    <div class="section-main">
+      <div class="divider-top">
+        <span
+          >Aguardamos a aceitação da empresa para o vínculo. Se preferir, entre
+          em contato</span
+        >
+        <img
+          src="../../../../assets/imgs/telecommuting.png"
+          class="img-register"
+        />
+      </div>
+    </div>
+
+    <div class="content-sections">
+      <span>Aguarde ou entre em contato</span>
+      <button class="btn btn-primary">Entrar em contato</button>
+    </div>
+  </div>
+
+  <!-- APPROVED e não tem cnh registrada-->
+  <div *ngIf="status === 'APPROVED' && !finallyDriverComplete" class="approved">
+    <h2>Bem vindo, {{ userName }}</h2>
+
+    <div class="section-main">
+      <div class="divider-top">
+        <span
+          >Você foi aprovado, para prosseguirmos termine de registrar
+          informações avançadas</span
+        >
+        <img
+          src="../../../../assets/imgs/telecommuting.png"
+          class="img-register"
+        />
+      </div>
+    </div>
+
+    <div class="content-sections">
+      <span>Aguarde ou entre em contato</span>
+      <button class="btn btn-primary">Entrar em contato</button>
+    </div>
+
+    <div class="finally-register-driver"></div>
+  </div>
+
+  <div *ngIf="status === 'APPROVED' && finallyDriverComplete" class="approved">
+    <p>Sua conta foi aprovada! Você já pode acessar o sistema.</p>
+  </div>
 </div>

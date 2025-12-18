@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+// Camada responsável pelas regras de negócio dos veículos
 public class VehicleServiceImpl implements VehicleService {
 
     private final VehicleRepository vehicleRepository;
@@ -35,17 +36,22 @@ public class VehicleServiceImpl implements VehicleService {
         this.userRepository = userRepository;
     }
 
+    // Criação de veículo vinculada à empresa do usuário logado
     @Override
     @Transactional
     public VehicleResponseDTO create(VehicleCreateDTO dto) {
+
+        // Usuário sempre obtido via contexto de segurança
         User user = SecurityUtils.getCurrentUserOrThrow(userRepository);
 
+        // Usuário precisa ter vínculo aprovado com alguma empresa
         CompanyLink companyLink = companyLinkRepository
                 .findByUserIdAndStatus(user.getId(), LinkStatus.APPROVED)
                 .orElseThrow(() ->
                         new BadRequestException("Usuário não possui vínculo aprovado com nenhuma empresa")
                 );
 
+        // Garante unicidade da placa
         if (vehicleRepository.existsByLicensePlate(dto.getLicensePlate())) {
             throw new BadRequestException("Placa já cadastrada");
         }
@@ -65,8 +71,10 @@ public class VehicleServiceImpl implements VehicleService {
         return mapToDTO(vehicle);
     }
 
+    // Lista todos os veículos da empresa do usuário
     @Override
     public List<VehicleResponseDTO> getMyVehicles() {
+
         User user = SecurityUtils.getCurrentUserOrThrow(userRepository);
 
         CompanyLink companyLink = companyLinkRepository
@@ -82,18 +90,22 @@ public class VehicleServiceImpl implements VehicleService {
                 .toList();
     }
 
+    // Atualiza dados de um veículo
     @Override
     @Transactional
     public VehicleResponseDTO update(Long id, VehicleCreateDTO dto) {
+
         User user = SecurityUtils.getCurrentUserOrThrow(userRepository);
 
         Vehicle vehicle = vehicleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Veículo não encontrado"));
 
+        // Garante que o veículo pertence ao usuário
         if (!vehicle.getCompanyLink().getUser().getId().equals(user.getId())) {
             throw new BadRequestException("Você não pode editar este veículo");
         }
 
+        // Evita duplicidade de placa
         if (vehicleRepository.existsByLicensePlateAndIdNot(dto.getLicensePlate(), id)) {
             throw new BadRequestException("Placa já cadastrada em outro veículo");
         }
@@ -109,18 +121,22 @@ public class VehicleServiceImpl implements VehicleService {
         return mapToDTO(vehicle);
     }
 
+    // Desativação lógica (soft delete)
     @Override
     @Transactional
     public void deactivate(Long vehicleId) {
+
         User user = SecurityUtils.getCurrentUserOrThrow(userRepository);
 
         Vehicle vehicle = vehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new ResourceNotFoundException("Veículo não encontrado"));
 
+        // Confere posse do veículo
         if (!vehicle.getCompanyLink().getUser().getId().equals(user.getId())) {
             throw new BadRequestException("Você não pode desativar este veículo");
         }
 
+        // Evita operação duplicada
         if (!vehicle.getActive()) {
             throw new BadRequestException("Veículo já está desativado");
         }
@@ -129,6 +145,7 @@ public class VehicleServiceImpl implements VehicleService {
         vehicleRepository.save(vehicle);
     }
 
+    // Conversão Entity → DTO
     private VehicleResponseDTO mapToDTO(Vehicle vehicle) {
         return VehicleResponseDTO.builder()
                 .id(vehicle.getId())

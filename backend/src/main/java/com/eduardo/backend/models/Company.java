@@ -6,6 +6,10 @@ import lombok.*;
 
 import java.util.List;
 
+/**
+ * Entidade que representa uma empresa de transporte.
+ * Centraliza dados operacionais, financeiros e vínculo com usuários.
+ */
 @Entity
 @Table(name = "companies")
 @Getter
@@ -19,22 +23,26 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Dados básicos da empresa
     private String companyName;
     private String cnpj;
 
+    // Endereço
     private String country;
     private String state;
     private String city;
-    private String district;      // bairro
+    private String district;
     private String street;
     private String number;
     private String complement;
     private String zipCode;
 
+    // Contato
     private String phone;
     private String mobilePhone;
     private String email;
 
+    // Informações financeiras
     private String paymentType;
     private String paymentInfo;
 

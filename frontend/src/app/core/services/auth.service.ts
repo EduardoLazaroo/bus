@@ -51,7 +51,7 @@ export class AuthService {
   }
 
   getCurrentUser(): Observable<UserDTO> {
-    return this.http.get<UserDTO>(`${this.apiUrl}/me`);
+    return this.http.get<UserDTO>(`${this.apiUrl}/mine`);
   }
 
   getUserRole(): UserRole | null {

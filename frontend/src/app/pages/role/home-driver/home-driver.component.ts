@@ -1,24 +1,61 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { UserSelectCompanyComponent } from '../user-select-company/user-select-company.component';
+import { FinalRegistrationClientComponent } from '../final-registration-client/final-registration-client.component';
+import { Navbar } from '../../navbar/navbar.component';
+import { CompanyLinkService } from '../../../core/services/companyLink.service';
+export type ClientFlowStatus = 'NO_COMPANY' | 'PENDING' | 'APPROVED';
 
 @Component({
   selector: 'app-home-driver',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    UserSelectCompanyComponent,
+    FinalRegistrationClientComponent,
+    Navbar,
+  ],
   templateUrl: './home-driver.component.html',
-  styleUrls: ['./home-driver.component.scss']
+  styleUrls: ['./home-driver.component.scss'],
 })
-export class HomeDriverComponent {
-  userRole: string | null = null;
+export class HomeDriverComponent implements OnInit{
+  status: ClientFlowStatus = 'NO_COMPANY';
+  step = 0;
+  userName: string | null = null;
+  finallyDriverComplete = false
 
-  constructor(private authService: AuthService, private router: Router) {
-    this.userRole = this.authService.getUserRole();
+  constructor(
+    private authService: AuthService,
+    private companyLinkService: CompanyLinkService
+  ) {
+    this.userName = this.authService.getUserName();
   }
 
-  logout() {
-    this.authService.logout();
-    this.router.navigate(['/login']);
+  ngOnInit(): void {
+    this.resolveClientStatus();
+  }
+
+  resolveClientStatus(): void {
+    this.companyLinkService.getMyLinks().subscribe({
+      next: (links) => {
+        console.warn(links);
+        if (links.some((l) => l.status === 'APPROVED')) {
+          this.status = 'APPROVED';
+          return;
+        }
+
+        if (links.some((l) => l.status === 'PENDING')) {
+          this.status = 'PENDING';
+          return;
+        }
+
+        this.status = 'NO_COMPANY';
+      },
+    });
+  }
+
+  onUserActivated(): void {
+    this.step = 2;
   }
 }

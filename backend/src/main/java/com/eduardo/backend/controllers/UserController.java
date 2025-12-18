@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
+// Controller responsável apenas por expor endpoints HTTP de usuário
 public class UserController {
 
     private final UserService userService;
@@ -21,35 +22,38 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
-    // REGISTRO
+    // Endpoint público para registro de usuário
     @PostMapping("/register")
     public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
         UserDTO createdUser = userService.createUser(userDTO);
         return ResponseEntity.status(201).body(createdUser);
     }
 
-    // LOGIN
+    // Endpoint público para autenticação (login)
     @PostMapping("/login")
     public ResponseEntity<UserDTO> login(@RequestBody LoginDTO loginRequest) {
         UserDTO userDTO = userService.login(loginRequest);
         return ResponseEntity.ok(userDTO);
     }
 
-    // UPDATE SEGURO (APENAS USUÁRIO LOGADO)
+    // Atualização segura: apenas o próprio usuário autenticado
     @PutMapping("/update")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<UserDTO> updateUser(
-            @RequestBody UserDTO updateRequest
-    ) {
+    public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO updateRequest) {
+
+        // Email vem do token JWT, não do request
         String email = SecurityUtils.getCurrentUserEmailOrThrow();
+
         UserDTO updated = userService.updateUser(email, updateRequest);
         return ResponseEntity.ok(updated);
     }
 
-    // GET ME SEGURO
+    // Retorna os dados do usuário logado
     @GetMapping("/mine")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserDTO> getCurrentUser() {
+
+        // Identificação do usuário baseada no contexto de segurança
         String email = SecurityUtils.getCurrentUserEmailOrThrow();
 
         return userRepository.findByEmail(email)

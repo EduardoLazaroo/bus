@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+// Camada responsável pela regra de negócio do usuário
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -22,12 +23,16 @@ public class UserServiceImpl implements UserService {
         this.jwtUtil = jwtUtil;
     }
 
+    // Criação de usuário com validação básica e senha criptografada
     @Override
     public UserDTO createUser(UserDTO userDTO) {
+
+        // Impede cadastro duplicado por email
         if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
             throw new RuntimeException("Email já cadastrado");
         }
 
+        // Constrói entidade User a partir do DTO
         User user = new User();
         user.setName(userDTO.getName());
         user.setEmail(userDTO.getEmail());
@@ -36,39 +41,52 @@ public class UserServiceImpl implements UserService {
 
         user = userRepository.save(user);
 
+        // Retorno seguro sem senha
         userDTO.setId(user.getId());
         userDTO.setPassword(null);
         return userDTO;
     }
 
+    // Autenticação do usuário e geração do JWT
     @Override
     public UserDTO login(LoginDTO loginRequest) {
+
+        // Busca usuário pelo email
         User user = userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
+        // Valida senha criptografada
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new RuntimeException("Senha inválida");
         }
 
-        // Gera token JWT
-        String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
+        // Geração do token JWT com email e role
+        String token = jwtUtil.generateToken(
+                user.getEmail(),
+                user.getRole().name()
+        );
 
+        // Monta DTO de resposta
         UserDTO dto = new UserDTO();
         dto.setId(user.getId());
         dto.setName(user.getName());
         dto.setEmail(user.getEmail());
         dto.setRole(user.getRole());
-        dto.setPassword(null); // não retornar a senha
-        dto.setToken(token); // retorna o token
+        dto.setPassword(null);
+        dto.setToken(token);
 
         return dto;
     }
 
+    // Atualização de dados do usuário logado
     @Override
     public UserDTO updateUser(String email, UserDTO updateRequest) {
+
+        // Garante que o usuário existe e é o dono da conta
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
+        // Atualizações parciais (somente campos enviados)
         if (updateRequest.getName() != null)
             user.setName(updateRequest.getName());
         if (updateRequest.getPhone() != null)
@@ -86,12 +104,12 @@ public class UserServiceImpl implements UserService {
         if (updateRequest.getNumero() != null)
             user.setNumero(updateRequest.getNumero());
 
-        // ✅ ATUALIZA SENHA COM SEGURANÇA
+        // Atualização segura de senha (sempre criptografada)
         if (updateRequest.getPassword() != null && !updateRequest.getPassword().isBlank()) {
             user.setPassword(passwordEncoder.encode(updateRequest.getPassword()));
         }
 
-        // ❌ BLOQUEIA ATUALIZAÇÃO DE ROLE VIA API
+        // Garante que a role não seja alterada via API
         user.setRole(user.getRole());
 
         userRepository.save(user);

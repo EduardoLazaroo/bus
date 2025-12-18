@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CompanyLinkResponseDTO } from '../models/company-link.model';
+export type CompanyLinkRole = 'CLIENT' | 'DRIVER';
 
 @Injectable({ providedIn: 'root' })
 export class CompanyLinkService {
@@ -14,15 +15,21 @@ export class CompanyLinkService {
     return this.http.get<CompanyLinkResponseDTO[]>(`${this.apiUrl}/available`);
   }
 
-  // CLIENT solicita vínculo com uma empresa
-  requestAccess(companyId: number): Observable<CompanyLinkResponseDTO> {
+  // USER solicita vínculo com role (CLIENT ou DRIVER)
+  requestAccess(
+    companyId: number,
+    requestedRole: CompanyLinkRole
+  ): Observable<CompanyLinkResponseDTO> {
     return this.http.post<CompanyLinkResponseDTO>(
-      `${this.apiUrl}/request/${companyId}`,
-      null
+      `${this.apiUrl}/request`,
+      {
+        companyId,
+        requestedRole,
+      }
     );
   }
 
-  // CLIENT vê seus vínculos (PENDING / APPROVED)
+  // CLIENT vê seus vínculos
   getMyLinks(): Observable<CompanyLinkResponseDTO[]> {
     return this.http.get<CompanyLinkResponseDTO[]>(`${this.apiUrl}/mine`);
   }
@@ -40,6 +47,7 @@ export class CompanyLinkService {
     );
   }
 
+  // OWNER vê usuários vinculados
   getUsersLinkedToCompany(
     companyId: number
   ): Observable<CompanyLinkResponseDTO[]> {

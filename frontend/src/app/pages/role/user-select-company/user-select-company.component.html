@@ -2,14 +2,11 @@
   <!-- STEP 1: SELEÇÃO -->
   <div *ngIf="step === 'SELECT'">
     <div class="head-text">
-      <span>
-        Para prosseguirmos, selecione a empresa à qual você pertence.
-      </span>
+      <span>Para prosseguirmos, selecione a empresa à qual você pertence.</span>
     </div>
 
-    <label for="company">Selecione a empresa</label>
-
-    <select id="company" (change)="onCompanyChange($event)">
+    <label>Selecione a empresa</label>
+    <select (change)="onCompanyChange($event)">
       <option value="" disabled selected>Selecione...</option>
       <option *ngFor="let link of availableCompanies" [value]="link.companyId">
         {{ link.companyName }}
@@ -17,43 +14,58 @@
     </select>
 
     <button
-      type="button"
       class="btn btn-primary"
       [disabled]="!selectedCompanyId"
-      (click)="goToConfirm()"
+      (click)="goNext()"
     >
       Próximo
     </button>
   </div>
 
   <!-- STEP 2: CONFIRMAÇÃO -->
+  <div *ngIf="step === 'DRIVER_PROFILE'" class="driver-form">
+    <h2>Cadastro de Motorista</h2>
+
+    <label>CPF</label>
+    <input type="text" [(ngModel)]="driverProfile.cpf" />
+
+    <label>RG</label>
+    <input type="text" [(ngModel)]="driverProfile.rg" />
+
+    <label>Número da CNH</label>
+    <input type="text" [(ngModel)]="driverProfile.cnhNumber" />
+
+    <label>Categoria CNH</label>
+    <input type="text" [(ngModel)]="driverProfile.cnhCategory" />
+
+    <label>Validade da CNH</label>
+    <input type="date" [(ngModel)]="driverProfile.cnhExpirationDate" />
+
+    <label>Imagem CNH (URL)</label>
+    <input type="text" [(ngModel)]="driverProfile.cnhImage" />
+
+    <div class="actions">
+      <button class="btn btn-secondary" (click)="back()">Voltar</button>
+
+      <button class="btn btn-primary" (click)="saveDriverProfileAndContinue()">
+        Salvar e continuar
+      </button>
+    </div>
+  </div>
+
   <div *ngIf="step === 'CONFIRM'" class="finish-update">
-    <img
-      src="../../../../assets/imgs/register_imgtwo_client.png"
-      class="img-register"
-    />
+    <h2>Pronto!</h2>
 
-    <div class="bottom-confirm">
-      <h2>Pronto!</h2>
-      <span>
-        Agora, basta solicitar o vínculo e aguardar a aprovação da empresa. Se
-        quiser agilizar o processo, você pode entrar em contato diretamente com
-        a empresa.
-      </span>
+    <span>
+      Agora, basta solicitar o vínculo e aguardar a aprovação da empresa.
+    </span>
 
-      <div class="actions">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          (click)="backToSelect()"
-        >
-          Voltar
-        </button>
+    <div class="actions">
+      <button class="btn btn-secondary" (click)="back()">Voltar</button>
 
-        <button type="button" class="btn btn-primary" (click)="requestAccess()">
-          Solicitar vinculo
-        </button>
-      </div>
+      <button class="btn btn-primary" (click)="requestAccessToOwner()">
+        Solicitar vínculo
+      </button>
     </div>
   </div>
 </div>

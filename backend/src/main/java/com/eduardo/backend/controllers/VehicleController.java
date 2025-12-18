@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/vehicles")
+// Controller responsável apenas por expor endpoints de veículos
 public class VehicleController {
 
     private final VehicleService vehicleService;
@@ -26,7 +27,7 @@ public class VehicleController {
         return ResponseEntity.ok(vehicleService.create(dto));
     }
 
-    // Lista todos os veículos do usuário (ativos e desativados)
+    // Lista todos os veículos da empresa do usuário (ativos e inativos)
     @GetMapping("/mine")
     public ResponseEntity<List<VehicleResponseDTO>> getMyVehicles() {
         return ResponseEntity.ok(vehicleService.getMyVehicles());
@@ -41,7 +42,7 @@ public class VehicleController {
         return ResponseEntity.ok(vehicleService.update(id, dto));
     }
 
-    // Desativa (soft delete) um veículo do usuário
+    // Desativa um veículo (soft delete)
     @PatchMapping("/{id}/deactivate")
     public ResponseEntity<Void> deactivate(@PathVariable Long id) {
         vehicleService.deactivate(id);

@@ -5,6 +5,10 @@ import com.eduardo.backend.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 
+/**
+ * Representa o vínculo entre um usuário e uma empresa.
+ * Essa entidade controla status e papel do usuário dentro da empresa.
+ */
 @Entity
 @Table(name = "company_links")
 @Getter
@@ -18,21 +22,21 @@ public class CompanyLink {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // USUÁRIO VINCULADO
+    // Usuário que está solicitando ou possui vínculo
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    // EMPRESA VINCULADA
+    // Empresa à qual o usuário está vinculado
     @ManyToOne
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
 
-    // STATUS DO VÍNCULO (PENDING / APPROVED / REJECTED)
+    // Status do vínculo (PENDING, APPROVED, REJECTED)
     @Enumerated(EnumType.STRING)
     private LinkStatus status;
 
-    // ROLE DO USUÁRIO DENTRO DA EMPRESA (OWNER / ADMIN / EMPLOYEE / VIEWER)
+    // Papel do usuário dentro da empresa após aprovação
     @Enumerated(EnumType.STRING)
     private UserRole roleInCompany;
 }

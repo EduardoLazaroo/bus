@@ -7,7 +7,13 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Repositório responsável por consultas
+ * relacionadas às empresas.
+ */
 @Repository
 public interface CompanyRepository extends JpaRepository<Company, Long> {
+
+    // Lista empresas filtrando pelo status
     List<Company> findByStatus(CompanyStatus status);
 }

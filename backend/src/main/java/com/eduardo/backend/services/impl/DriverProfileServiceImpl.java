@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+// Camada responsável pela regra de negócio do perfil de motorista
 public class DriverProfileServiceImpl implements DriverProfileService {
 
 	private final DriverProfileRepository driverProfileRepository;
@@ -26,17 +27,24 @@ public class DriverProfileServiceImpl implements DriverProfileService {
 		this.userRepository = userRepository;
 	}
 
+	// Cria ou atualiza o perfil do motorista do usuário logado
 	@Override
 	@Transactional
 	public DriverProfileResponseDTO createOrUpdate(DriverProfileCreateDTO dto) {
+
+		// Usuário obtido exclusivamente do contexto de segurança (JWT)
 		User user = SecurityUtils.getCurrentUserOrThrow(userRepository);
 
+		// Se já existir perfil, reutiliza; senão cria um novo
 		DriverProfile profile = driverProfileRepository
 				.findByUserId(user.getId())
-				.orElse(DriverProfile.builder()
-						.user(user)
-						.build());
+				.orElse(
+						DriverProfile.builder()
+								.user(user)
+								.build()
+				);
 
+		// Atualização dos dados do perfil
 		profile.setCpf(dto.getCpf());
 		profile.setRg(dto.getRg());
 		profile.setCnhNumber(dto.getCnhNumber());
@@ -49,16 +57,22 @@ public class DriverProfileServiceImpl implements DriverProfileService {
 		return mapToDTO(profile);
 	}
 
+	// Retorna o perfil do motorista do usuário autenticado
 	@Override
 	public DriverProfileResponseDTO getMyProfile() {
+
 		User user = SecurityUtils.getCurrentUserOrThrow(userRepository);
 
-		DriverProfile profile = driverProfileRepository.findByUserId(user.getId())
-				.orElseThrow(() -> new ResourceNotFoundException("Perfil de motorista não encontrado"));
+		DriverProfile profile = driverProfileRepository
+				.findByUserId(user.getId())
+				.orElseThrow(() ->
+						new ResourceNotFoundException("Perfil de motorista não encontrado")
+				);
 
 		return mapToDTO(profile);
 	}
 
+	// Converte entidade em DTO de resposta
 	private DriverProfileResponseDTO mapToDTO(DriverProfile profile) {
 		return DriverProfileResponseDTO.builder()
 				.id(profile.getId())

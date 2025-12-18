@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller responsável por todas as operações
+ * relacionadas às empresas de transporte.
+ */
 @RestController
 @RequestMapping("/api/companies")
 public class CompanyController {
@@ -20,7 +24,10 @@ public class CompanyController {
         this.companyService = companyService;
     }
 
-    // OWNER cria company (fica PENDING)
+    /**
+     * OWNER cria uma empresa.
+     * A empresa nasce com status PENDING e aguarda aprovação do ADMIN.
+     */
     @PostMapping
     @PreAuthorize("hasRole('OWNER')")
     public ResponseEntity<CompanyResponseDTO> createCompany(
@@ -30,7 +37,9 @@ public class CompanyController {
         return ResponseEntity.ok(response);
     }
 
-    // OWNER atualiza empresa (PUT)
+    /**
+     * OWNER atualiza dados da própria empresa.
+     */
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('OWNER')")
     public ResponseEntity<CompanyResponseDTO> update(
@@ -40,14 +49,19 @@ public class CompanyController {
         return ResponseEntity.ok(companyService.updateCompany(id, dto));
     }
 
-    // ADMIN vê companies pendentes
+    /**
+     * ADMIN lista empresas que ainda estão pendentes de aprovação.
+     */
     @GetMapping("/pending")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<CompanyResponseDTO>> getPendingCompanies() {
         return ResponseEntity.ok(companyService.getPendingCompanies());
     }
 
-    // ADMIN aprova/rejeita
+    /**
+     * ADMIN aprova ou rejeita uma empresa.
+     * Se aprovada, o vínculo OWNER ↔ COMPANY é criado automaticamente.
+     */
     @PutMapping("/{companyId}/approve")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CompanyResponseDTO> approveCompany(
@@ -58,14 +72,19 @@ public class CompanyController {
         return ResponseEntity.ok(response);
     }
 
-    // OWNER vê suas companies
+    /**
+     * OWNER visualiza todas as empresas que ele é dono.
+     */
     @GetMapping("/mine")
     @PreAuthorize("hasRole('OWNER')")
     public ResponseEntity<List<CompanyResponseDTO>> getCompaniesByOwner() {
         return ResponseEntity.ok(companyService.getCompaniesByOwner());
     }
 
-    // qualquer usuário autenticado busca por ID
+    /**
+     * Qualquer usuário autenticado pode consultar
+     * os dados públicos de uma empresa pelo ID.
+     */
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CompanyResponseDTO> getCompany(@PathVariable Long id) {
