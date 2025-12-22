@@ -1,0 +1,21 @@
+<div class="page">
+  <button (click)="back()">Voltar</button>
+  <h2>{{ journey?.name }}</h2>
+  <p>{{ journey?.description }}</p>
+
+  <section class="notices">
+    <h3>Avisos</h3>
+    <div *ngIf="notices.length === 0">Sem avisos</div>
+    <ul>
+      <li *ngFor="let n of notices">
+        <strong>{{ n.createdAt | date : "short" }}</strong
+        >: {{ n.message }}
+      </li>
+    </ul>
+
+    <div class="new-actions">
+      <button [routerLink]="['/journeys', journeyId, 'notices', 'new']">Criar aviso</button>
+      <button [routerLink]="['/journeys', journeyId, 'polls', 'new']">Criar enquete</button>
+    </div>
+  </section>
+</div>

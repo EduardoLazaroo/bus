@@ -6,15 +6,22 @@ import { CompanyService } from '../../../core/services/company.service';
 import { CompanyLinkService } from '../../../core/services/companyLink.service';
 import { CompanyLinkRequirementsDTO } from '../../../core/models/company-link-requirements.model';
 import { CompanyActivationComponent } from '../company-activation/company-activation.component';
+import { ListJourneysComponent } from '../../journey/list-journeys/list-journeys.component';
+import { JourneyService } from '../../../core/services/journey.service';
 import { CompanyDTO } from '../../../core/models/company.model';
-import { Navbar } from '../../navbar/navbar.component';
+import { NavbarComponent } from '../../navbar/navbar.component';
 
 type CompanyStatus = 'NO_COMPANY' | 'PENDING' | 'APPROVED' | 'REJECTED';
 
 @Component({
   selector: 'app-home-owner',
   standalone: true,
-  imports: [CommonModule, CompanyActivationComponent, Navbar],
+  imports: [
+    CommonModule,
+    CompanyActivationComponent,
+    NavbarComponent,
+    ListJourneysComponent,
+  ],
   templateUrl: './home-owner.component.html',
   styleUrls: ['./home-owner.component.scss'],
 })
@@ -28,11 +35,13 @@ export class HomeOwnerComponent implements OnInit {
   hasDriver: boolean = false;
   hasVehicle: boolean = false;
   canCreateJourney: boolean = false;
+  showJourneys: boolean = false;
 
   constructor(
     private authService: AuthService,
     private companyService: CompanyService,
     private companyLinkService: CompanyLinkService,
+    private journeyService: JourneyService,
     private router: Router
   ) {
     this.userRole = this.authService.getUserRole();
@@ -42,6 +51,16 @@ export class HomeOwnerComponent implements OnInit {
   ngOnInit(): void {
     this.loadCompanyStatus();
     this.loadRequirements();
+    this.checkJourneysExist();
+  }
+
+  checkJourneysExist() {
+    this.journeyService.list().subscribe({
+      next: (l) => {
+        this.showJourneys = l && l.length > 0;
+      },
+      error: () => (this.showJourneys = false),
+    });
   }
 
   goToAdvancedConf() {
@@ -54,6 +73,10 @@ export class HomeOwnerComponent implements OnInit {
 
   goToVehicle() {
     this.router.navigate(['/vehicle']);
+  }
+
+  goToNewJourney() {
+    this.router.navigate(['/journeys/new']);
   }
 
   loadCompanyStatus() {

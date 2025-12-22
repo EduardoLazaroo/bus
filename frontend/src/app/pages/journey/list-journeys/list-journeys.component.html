@@ -1,0 +1,12 @@
+<div class="page">
+  <h2>Minhas Jornadas</h2>
+  <button (click)="goNew()">Nova Jornada</button>
+
+  <div class="list">
+    <div *ngFor="let j of list" class="card" (click)="openDetail(j)">
+      <h3>{{ j.name }}</h3>
+      <p>{{ j.description }}</p>
+      <div>Status: {{ j.status }}</div>
+    </div>
+  </div>
+</div>

@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { CompanyLinkService } from '../../../core/services/companyLink.service';
 import { CompanyLinkResponseDTO } from '../../../core/models/company-link.model';
-import { Navbar } from '../../navbar/navbar.component';
+import { NavbarComponent } from '../../navbar/navbar.component';
 
 @Component({
   selector: 'app-customer',
   standalone: true,
-  imports: [CommonModule, Navbar],
+  imports: [CommonModule, NavbarComponent],
   templateUrl: './customer.component.html',
   styleUrls: ['./customer.component.scss'],
 })

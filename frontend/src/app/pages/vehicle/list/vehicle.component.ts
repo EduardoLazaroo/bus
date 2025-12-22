@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { Navbar } from '../../navbar/navbar.component';
 import { Router } from '@angular/router';
 import { VehicleDTO } from '../../../core/models/vehicle.model';
 import { VehicleService } from '../../../core/services/vehicle.services';
+import { NavbarComponent } from '../../navbar/navbar.component';
 
 @Component({
   selector: 'app-vehicle',
   standalone: true,
-  imports: [CommonModule, Navbar],
+  imports: [CommonModule, NavbarComponent],
   templateUrl: './vehicle.component.html',
   styleUrls: ['./vehicle.component.scss'],
 })

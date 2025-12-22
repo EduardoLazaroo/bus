@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
 import { UserSelectCompanyComponent } from '../user-select-company/user-select-company.component';
 import { FinalRegistrationClientComponent } from '../final-registration-client/final-registration-client.component';
-import { Navbar } from '../../navbar/navbar.component';
 import { CompanyLinkService } from '../../../core/services/companyLink.service';
+import { NavbarComponent } from '../../navbar/navbar.component';
 export type ClientFlowStatus = 'NO_COMPANY' | 'PENDING' | 'APPROVED';
 
 @Component({
@@ -14,7 +14,7 @@ export type ClientFlowStatus = 'NO_COMPANY' | 'PENDING' | 'APPROVED';
     CommonModule,
     UserSelectCompanyComponent,
     FinalRegistrationClientComponent,
-    Navbar,
+    NavbarComponent,
   ],
   templateUrl: './home-driver.component.html',
   styleUrls: ['./home-driver.component.scss'],

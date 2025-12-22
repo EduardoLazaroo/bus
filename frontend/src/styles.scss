@@ -8,10 +8,11 @@
 :root {
   --primary-color: #27445D;
   --primary-color-hover: #1b3750;
-  --seccondary-color: #497D74;
-  --seccondary-color-hover: #3a6b63;
+  --secondary-color: #497D74; /* corrigido */
+  --secondary-color-hover: #3a6b63;
   --background-primary: #F8F9FA;
   --text-color: #606060;
+  --navbar-height: 60px; /* nova variável */
 }
 
 body {
@@ -172,7 +173,7 @@ label {
 ============================== */
 
 .comp-with-nav {
-  height: calc(100vh - 60px);
+  height: calc(100vh - var(--navbar-height));
 }
 
 

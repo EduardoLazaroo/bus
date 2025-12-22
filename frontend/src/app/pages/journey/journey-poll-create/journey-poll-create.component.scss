@@ -1,0 +1,16 @@
+.page {
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    input {
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #d1d5db;
+    }
+    .actions {
+      display: flex;
+      gap: 8px;
+    }
+  }
+}

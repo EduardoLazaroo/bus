@@ -1,0 +1,61 @@
+.page {
+  padding: 16px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 900px;
+  width: 100%;
+}
+
+/* reutiliza input-group do styles.scss, adiciona ajustes locais */
+.input-group {
+  margin-bottom: 8px;
+
+  label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  input,
+  textarea,
+  select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+}
+
+/* selects múltiplos com melhor visual */
+.multi-select {
+  min-height: 120px;
+  height: auto;
+  padding-right: 8px; /* evitar corte em opções longas */
+  background: #fff;
+}
+
+/* ações alinhadas e espaçadas conforme padrão */
+.actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start;
+  margin-top: 8px;
+}
+
+/* tornar botão desabilitado consistente com styles.scss */
+button:disabled {
+  opacity: 0.8;
+  cursor: not-allowed;
+}

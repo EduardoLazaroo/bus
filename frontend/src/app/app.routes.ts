@@ -12,6 +12,11 @@ import { ProfileComponent } from './pages/profile/profile.component';
 import { CustomerComponent } from './pages/role/customer/customer.component';
 import { VehicleComponent } from './pages/vehicle/list/vehicle.component';
 import { VehicleUpdateComponent } from './pages/vehicle/update/vehicle-update.component';
+import { NewJourneyComponent } from './pages/journey/new-journey/new-journey.component';
+import { ListJourneysComponent } from './pages/journey/list-journeys/list-journeys.component';
+import { JourneyDetailComponent } from './pages/journey/journey-detail/journey-detail.component';
+import { JourneyNoticeCreateComponent } from './pages/journey/journey-notice-create/journey-notice-create.component';
+import { JourneyPollCreateComponent } from './pages/journey/journey-poll-create/journey-poll-create.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -55,6 +60,38 @@ export const routes: Routes = [
   {
     path: 'vehicle-update',
     component: VehicleUpdateComponent,
+    canActivate: [RoleGuard],
+    data: { roles: ['OWNER'] },
+  },
+
+  // JOURNEYS
+  {
+    path: 'journeys',
+    component: ListJourneysComponent,
+    canActivate: [RoleGuard],
+    data: { roles: ['OWNER'] },
+  },
+  {
+    path: 'journeys/new',
+    component: NewJourneyComponent,
+    canActivate: [RoleGuard],
+    data: { roles: ['OWNER'] },
+  },
+  {
+    path: 'journeys/:id',
+    component: JourneyDetailComponent,
+    canActivate: [RoleGuard],
+    data: { roles: ['OWNER'] },
+  },
+  {
+    path: 'journeys/:id/notices/new',
+    component: JourneyNoticeCreateComponent,
+    canActivate: [RoleGuard],
+    data: { roles: ['OWNER'] },
+  },
+  {
+    path: 'journeys/:id/polls/new',
+    component: JourneyPollCreateComponent,
     canActivate: [RoleGuard],
     data: { roles: ['OWNER'] },
   },

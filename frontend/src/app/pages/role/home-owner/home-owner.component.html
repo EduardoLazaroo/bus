@@ -81,72 +81,115 @@
       ><strong>{{ company?.companyName }}</strong>
     </div>
 
-    <div class="section-main">
-      <div class="divider-top">
-        <span
-          >Sua empresa já adquiriu nossos serviços! Agora, é hora de criar suas
-          jornadas, definir os responsáveis e adicionar os usuários.
-        </span>
-        <img
-          src="../../../../assets/imgs/company-active.png"
-          class="img-register"
-        />
-      </div>
+    <div *ngIf="showJourneys; else noJourneys">
+      <app-list-journeys></app-list-journeys>
     </div>
 
-    <div class="cards-completly">
-      <div class="head-cards">
-        <span>Você esta aqui</span>
-        <div class="line-conjunto">
-          <div class="conjunto">
-            <span>-</span>
-            <span>O</span>
-          </div>
-          <div class="conjunto">
-            <span>-</span>
-            <span>O</span>
-          </div>
-          <div class="conjunto">
-            <span>-</span>
-            <span>O</span>
-          </div>
+    <ng-template #noJourneys>
+      <div class="section-main">
+        <div class="divider-top">
+          <span
+            >Sua empresa já adquiriu nossos serviços! Agora, é hora de criar
+            suas jornadas, definir os responsáveis e adicionar os usuários.
+          </span>
+          <img
+            src="../../../../assets/imgs/company-active.png"
+            class="img-register"
+          />
         </div>
       </div>
-      <div class="card-one" (click)="goToVehicle()">
-        <div [ngClass]="{ 'left': true, 'left-able': hasVehicle, 'left-disable': !hasVehicle }">
-          <img src="assets/imgs/mini-bus.png" alt="mini onibus" />
-          <span class="title">Cadastrar Veículo</span>
-          <span>Cadastro de veiculo, tenha em mãos todos documentos</span>
-        </div>
-        <div [ngClass]="{ 'right': true, 'right-able': hasVehicle, 'right-disable': !hasVehicle }"></div>
-      </div>
-      <div class="card-two" (click)="goToCustomer()">
-        <div [ngClass]="{ 'left': true, 'left-able': hasClient, 'left-disable': !hasClient }">
-          <img src="assets/imgs/mini-user.png" alt="mini onibus" />
-          <span class="title">Adicionar cliente</span>
-          <span>Pelo menos um cliente para partiipar do transporte</span>
-        </div>
-        <div [ngClass]="{ 'right': true, 'right-able': hasClient, 'right-disable': !hasClient }"></div>
-      </div>
-      <div class="card-three">
-        <div [ngClass]="{ 'left': true, 'left-able': hasDriver, 'left-disable': !hasDriver }">
-          <img src="assets/imgs/mini-driver.png" alt="mini onibus" />
-          <span class="title">Vincular motorista</span>
-          <span>Cadastre os motoristas que vão dirigir os veículos</span>
-        </div>
-        <div [ngClass]="{ 'right': true, 'right-able': hasDriver, 'right-disable': !hasDriver }"></div>
-      </div>
-    </div>
 
-    <div class="create-journey">
-      <span class="title">Minha primeira jornada!</span>
-      <span>Finalize os cadastros acima e crie sua jornada!</span>
-      <button
-        [ngClass]="canCreateJourney ? 'btn btn-enabled' : 'btn btn-disabled'"
-        [disabled]="!canCreateJourney"
-      >
-        Criar jornada!
-      </button>
-    </div>
+      <div class="cards-completly">
+        <div class="head-cards">
+          <span>Você está aqui</span>
+          <div class="line-conjunto">
+            <div class="conjunto" [ngClass]="{ done: hasVehicle }">
+              <div class="step-circle">{{ hasVehicle ? "✓" : "1" }}</div>
+              <div class="step-label">Veículo</div>
+            </div>
+            <div class="conjunto" [ngClass]="{ done: hasClient }">
+              <div class="step-circle">{{ hasClient ? "✓" : "2" }}</div>
+              <div class="step-label">Cliente</div>
+            </div>
+            <div class="conjunto" [ngClass]="{ done: hasDriver }">
+              <div class="step-circle">{{ hasDriver ? "✓" : "3" }}</div>
+              <div class="step-label">Motorista</div>
+            </div>
+          </div>
+        </div>
+        <div class="card-one" (click)="goToVehicle()">
+          <div
+            [ngClass]="{
+              left: true,
+              'left-able': hasVehicle,
+              'left-disable': !hasVehicle
+            }"
+          >
+            <img src="assets/imgs/mini-bus.png" alt="mini onibus" />
+            <span class="title">Cadastrar Veículo</span>
+            <span>Cadastro de veiculo, tenha em mãos todos documentos</span>
+          </div>
+          <div
+            [ngClass]="{
+              right: true,
+              'right-able': hasVehicle,
+              'right-disable': !hasVehicle
+            }"
+          ></div>
+        </div>
+        <div class="card-two" (click)="goToCustomer()">
+          <div
+            [ngClass]="{
+              left: true,
+              'left-able': hasClient,
+              'left-disable': !hasClient
+            }"
+          >
+            <img src="assets/imgs/mini-user.png" alt="mini onibus" />
+            <span class="title">Adicionar cliente</span>
+            <span>Pelo menos um cliente para partiipar do transporte</span>
+          </div>
+          <div
+            [ngClass]="{
+              right: true,
+              'right-able': hasClient,
+              'right-disable': !hasClient
+            }"
+          ></div>
+        </div>
+        <div class="card-three">
+          <div
+            [ngClass]="{
+              left: true,
+              'left-able': hasDriver,
+              'left-disable': !hasDriver
+            }"
+          >
+            <img src="assets/imgs/mini-driver.png" alt="mini onibus" />
+            <span class="title">Vincular motorista</span>
+            <span>Cadastre os motoristas que vão dirigir os veículos</span>
+          </div>
+          <div
+            [ngClass]="{
+              right: true,
+              'right-able': hasDriver,
+              'right-disable': !hasDriver
+            }"
+          ></div>
+        </div>
+      </div>
+
+      <div class="create-journey">
+        <span class="title">Minha primeira jornada!</span>
+        <span>Finalize os cadastros acima e crie sua jornada!</span>
+        <button
+          (click)="goToNewJourney()"
+          [ngClass]="canCreateJourney ? 'btn btn-enabled' : 'btn btn-disabled'"
+          [disabled]="!canCreateJourney"
+        >
+          Criar jornada!
+        </button>
+      </div>
+    </ng-template>
   </div>
 </div>

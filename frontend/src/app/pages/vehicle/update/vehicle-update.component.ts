@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { Navbar } from '../../navbar/navbar.component';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { VehicleDTO } from '../../../core/models/vehicle.model';
 import { VehicleService } from '../../../core/services/vehicle.services';
+import { NavbarComponent } from '../../navbar/navbar.component';
 
 @Component({
   selector: 'app-vehicle-update',
   standalone: true,
-  imports: [CommonModule, Navbar, FormsModule],
+  imports: [CommonModule, NavbarComponent, FormsModule],
   templateUrl: './vehicle-update.component.html',
   styleUrls: ['./vehicle-update.component.scss'],
 })

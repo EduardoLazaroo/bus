@@ -156,9 +156,7 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="company_id" type="BIGINT"/>
-            <column name="driver_id" type="BIGINT"/>
-            <column name="vehicle_id" type="BIGINT"/>
+            <column name="company_link_id" type="BIGINT"/>
         </createTable>
 
         <!-- ===================== FOREIGN KEYS ===================== -->
@@ -200,23 +198,80 @@
 
         <addForeignKeyConstraint
                 baseTableName="journeys"
-                baseColumnNames="company_id"
-                referencedTableName="companies"
-                referencedColumnNames="id"
-                constraintName="fk_journey_company"/>
+            baseColumnNames="company_link_id"
+            referencedTableName="company_links"
+            referencedColumnNames="id"
+            constraintName="fk_journey_company_link"/>
+        <!-- association tables -->
 
-        <addForeignKeyConstraint
-                baseTableName="journeys"
-                baseColumnNames="driver_id"
-                referencedTableName="company_links"
-                referencedColumnNames="id"
-                constraintName="fk_journey_driver"/>
+        <createTable tableName="journey_drivers">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="journey_id" type="BIGINT"/>
+            <column name="company_link_id" type="BIGINT"/>
+        </createTable>
 
-        <addForeignKeyConstraint
-                baseTableName="journeys"
-                baseColumnNames="vehicle_id"
-                referencedTableName="vehicles"
-                referencedColumnNames="id"
-                constraintName="fk_journey_vehicle"/>
+        <createTable tableName="journey_clients">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="journey_id" type="BIGINT"/>
+            <column name="company_link_id" type="BIGINT"/>
+        </createTable>
+
+        <createTable tableName="journey_vehicles">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="journey_id" type="BIGINT"/>
+            <column name="vehicle_id" type="BIGINT"/>
+        </createTable>
+
+        <createTable tableName="journey_stops">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="journey_id" type="BIGINT"/>
+            <column name="seq_order" type="INT"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="address" type="VARCHAR(500)"/>
+            <column name="latitude" type="DOUBLE"/>
+            <column name="longitude" type="DOUBLE"/>
+        </createTable>
+
+        <createTable tableName="journey_notices">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="journey_id" type="BIGINT"/>
+            <column name="message" type="VARCHAR(1000)"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+
+        <createTable tableName="journey_polls">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="journey_id" type="BIGINT"/>
+            <column name="question" type="VARCHAR(1000)"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+
+        <!-- FKs for associations -->
+        <addForeignKeyConstraint baseTableName="journey_drivers" baseColumnNames="journey_id" referencedTableName="journeys" referencedColumnNames="id" constraintName="fk_jd_journey"/>
+        <addForeignKeyConstraint baseTableName="journey_drivers" baseColumnNames="company_link_id" referencedTableName="company_links" referencedColumnNames="id" constraintName="fk_jd_company_link"/>
+
+        <addForeignKeyConstraint baseTableName="journey_clients" baseColumnNames="journey_id" referencedTableName="journeys" referencedColumnNames="id" constraintName="fk_jc_journey"/>
+        <addForeignKeyConstraint baseTableName="journey_clients" baseColumnNames="company_link_id" referencedTableName="company_links" referencedColumnNames="id" constraintName="fk_jc_company_link"/>
+
+        <addForeignKeyConstraint baseTableName="journey_vehicles" baseColumnNames="journey_id" referencedTableName="journeys" referencedColumnNames="id" constraintName="fk_jv_journey"/>
+        <addForeignKeyConstraint baseTableName="journey_vehicles" baseColumnNames="vehicle_id" referencedTableName="vehicles" referencedColumnNames="id" constraintName="fk_jv_vehicle"/>
+
+        <addForeignKeyConstraint baseTableName="journey_stops" baseColumnNames="journey_id" referencedTableName="journeys" referencedColumnNames="id" constraintName="fk_js_journey"/>
+
+        <addForeignKeyConstraint baseTableName="journey_notices" baseColumnNames="journey_id" referencedTableName="journeys" referencedColumnNames="id" constraintName="fk_jn_journey"/>
+
+        <addForeignKeyConstraint baseTableName="journey_polls" baseColumnNames="journey_id" referencedTableName="journeys" referencedColumnNames="id" constraintName="fk_jp_journey"/>
     </changeSet>
 </databaseChangeLog>

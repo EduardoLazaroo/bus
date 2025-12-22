@@ -1,0 +1,12 @@
+<div class="page">
+  <button (click)="cancel()">Voltar</button>
+  <h2>Criar aviso</h2>
+
+  <div class="form">
+    <textarea [(ngModel)]="message" placeholder="Escreva o aviso..." rows="5"></textarea>
+    <div class="actions">
+      <button (click)="create()">Salvar</button>
+      <button (click)="cancel()">Cancelar</button>
+    </div>
+  </div>
+</div>
