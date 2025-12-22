@@ -1,12 +1,19 @@
-<div class="page">
-  <button (click)="cancel()">Voltar</button>
-  <h2>Criar enquete</h2>
+<div class="comp-with-nav">
+  <app-navbar></app-navbar>
 
-  <div class="form">
-    <input [(ngModel)]="question" placeholder="Digite a pergunta da enquete..." />
-    <div class="actions">
-      <button (click)="create()">Salvar</button>
-      <button (click)="cancel()">Cancelar</button>
+  <div class="page">
+    <button (click)="cancel()">Voltar</button>
+    <h2>Criar enquete</h2>
+
+    <div class="form">
+      <input
+        [(ngModel)]="question"
+        placeholder="Digite a pergunta da enquete..."
+      />
+      <div class="actions">
+        <button (click)="create()">Salvar</button>
+        <button (click)="cancel()">Cancelar</button>
+      </div>
     </div>
   </div>
 </div>

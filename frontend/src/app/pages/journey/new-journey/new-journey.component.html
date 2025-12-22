@@ -1,9 +1,12 @@
 <div class="page">
-  <h2>Criar Jornada</h2>
+  <div class="stepper">
+    <div class="step" [class.active]="currentStep === 1">Dados gerais</div>
+    <div class="step" [class.active]="currentStep === 2">Passageiros</div>
+  </div>
 
-  <div class="form card">
+  <div *ngIf="currentStep === 1" class="step-one">
     <div class="input-group">
-      <label>Nome</label>
+      <label>Nome da jornada</label>
       <input [(ngModel)]="dto.name" name="name" />
     </div>
 
@@ -12,38 +15,85 @@
       <textarea [(ngModel)]="dto.description" name="description"></textarea>
     </div>
 
+    <h2>VEICULO e MOTORISTA</h2>
     <div class="input-group">
-      <label>Motoristas (selecione)</label>
-      <select multiple [(ngModel)]="dto.driverCompanyLinkIds" name="driverCompanyLinkIds" class="multi-select">
-        <option *ngFor="let d of options?.drivers" [value]="d.id">
-          {{ d.userName }}
-        </option>
-      </select>
-    </div>
-
-    <div class="input-group">
-      <label>Clientes (selecione)</label>
-      <select multiple [(ngModel)]="dto.clientCompanyLinkIds" name="clientCompanyLinkIds" class="multi-select">
-        <option *ngFor="let c of options?.clients" [value]="c.id">
-          {{ c.userName }}
-        </option>
-      </select>
-    </div>
-
-    <div class="input-group">
-      <label>Veículos (selecione)</label>
-      <select multiple [(ngModel)]="dto.vehicleIds" name="vehicleIds" class="multi-select">
+      <label>Selecione um transporte</label>
+      <select
+        multiple
+        [(ngModel)]="dto.vehicleIds"
+        name="vehicleIds"
+        class="multi-select"
+      >
         <option *ngFor="let v of options?.vehicles" [value]="v.id">
           {{ v.model }} - {{ v.licensePlate }}
         </option>
       </select>
     </div>
 
-    <div class="actions">
-      <button class="btn btn-primary" (click)="submit()" [disabled]="loading || !dto.name">
-        Criar
+    <div class="input-group">
+      <label>Selecione o motorista</label>
+      <select
+        multiple
+        [(ngModel)]="dto.driverCompanyLinkIds"
+        name="driverCompanyLinkIds"
+        class="multi-select"
+      >
+        <option *ngFor="let d of options?.drivers" [value]="d.id">
+          {{ d.userName }}
+        </option>
+      </select>
+    </div>
+
+    <h2>Sobre a ida</h2>
+    <div class="stops">
+      <div *ngFor="let s of dto.stops; let i = index" class="stop-item">
+        <div class="stop-row">
+          <input
+            placeholder="Ponto"
+            [(ngModel)]="s.name"
+            name="stopName{{ i }}"
+          />
+          <button class="btn btn-danger" type="button" (click)="removeStop(i)">
+            Remover
+          </button>
+        </div>
+      </div>
+      <button class="btn btn-primary" type="button" (click)="addStop()">
+        Adicionar ponto
       </button>
-      <button class="btn btn-back" (click)="router.navigate(['/journeys'])">Cancelar</button>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" (click)="next()" [disabled]="!dto.name">
+        Próximo
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="currentStep === 2" class="step-two">
+    <div class="input-group">
+      <label>Adicionar passageiro</label>
+      <select
+        multiple
+        [(ngModel)]="dto.clientCompanyLinkIds"
+        name="clientCompanyLinkIds"
+        class="multi-select"
+      >
+        <option *ngFor="let c of options?.clients" [value]="c.id">
+          {{ c.userName }}
+        </option>
+      </select>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-back" (click)="prev()">Voltar</button>
+      <button
+        class="btn btn-primary"
+        (click)="submit()"
+        [disabled]="loading || !dto.name"
+      >
+        Finalizar
+      </button>
     </div>
   </div>
 </div>

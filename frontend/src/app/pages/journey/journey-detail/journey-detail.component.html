@@ -1,21 +1,62 @@
-<div class="page">
-  <button (click)="back()">Voltar</button>
-  <h2>{{ journey?.name }}</h2>
-  <p>{{ journey?.description }}</p>
-
-  <section class="notices">
-    <h3>Avisos</h3>
-    <div *ngIf="notices.length === 0">Sem avisos</div>
-    <ul>
-      <li *ngFor="let n of notices">
-        <strong>{{ n.createdAt | date : "short" }}</strong
-        >: {{ n.message }}
-      </li>
-    </ul>
-
-    <div class="new-actions">
-      <button [routerLink]="['/journeys', journeyId, 'notices', 'new']">Criar aviso</button>
-      <button [routerLink]="['/journeys', journeyId, 'polls', 'new']">Criar enquete</button>
+<div class="comp-with-nav">
+  <app-navbar></app-navbar>
+  <div class="profile-header">
+    <div (click)="backPage()">
+      <button><</button>
     </div>
-  </section>
+    <div>
+      <h4>Jornada</h4>
+    </div>
+    <div></div>
+  </div>
+
+  <div class="page">
+    <div class="card-journey">
+      <h3>{{ journey?.name }}</h3>
+      <p>{{ journey?.description }}</p>
+      <p>Motorista Id: {{ journey?.driverCompanyLinkIds }}</p>
+      <p>Veiculo Id: {{ journey?.vehicleIds }}</p>
+    </div>
+
+    <div class="services">
+      <span>Serviços</span>
+      <div class="notices">
+        <div>
+          <h3>Avisos</h3>
+          <button
+            class="brn btn-primary"
+            [routerLink]="['/journeys', journeyId, 'notices', 'new']"
+          >
+            Criar aviso
+          </button>
+        </div>
+        <div *ngIf="notices.length === 0">Sem avisos</div>
+        <ul>
+          <li *ngFor="let n of notices">
+            <strong>{{ n.createdAt | date : "short" }}</strong
+            >: {{ n.message }}
+          </li>
+        </ul>
+      </div>
+
+      <div class="polls">
+        <div>
+          <h3>Enquentes</h3>
+          <button
+            class="brn btn-primary"
+            [routerLink]="['/journeys', journeyId, 'polls', 'new']"
+          >
+            Criar enquete
+          </button>
+        </div>
+        <div *ngIf="polls.length === 0">Sem enquetes</div>
+        <ul>
+          <li *ngFor="let p of polls">
+            <strong>{{ p.createdAt | date : "short" }}</strong
+            >: {{ p.question }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </div>

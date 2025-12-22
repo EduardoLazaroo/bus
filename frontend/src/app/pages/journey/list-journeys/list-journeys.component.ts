@@ -6,35 +6,42 @@ import { JourneyService } from '../../../core/services/journey.service';
 import { JourneyResponseDTO } from '../../../core/models/journey.model';
 import { JourneyExtrasService } from '../../../core/services/journey-extras.service';
 import { JourneyNoticeDTO } from '../../../core/models/journey-notice.model';
+import { NavbarComponent } from '../../navbar/navbar.component';
 
 @Component({
   selector: 'app-list-journeys',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NavbarComponent],
   templateUrl: './list-journeys.component.html',
   styleUrls: ['./list-journeys.component.scss'],
 })
 export class ListJourneysComponent implements OnInit {
-  list: JourneyResponseDTO[] = [];
+  journeyResponseDTO: JourneyResponseDTO[] = [];
   noticesMap: Record<number, JourneyNoticeDTO[]> = {};
   showingNotices: Record<number, boolean> = {};
   newNoticeText: Record<number, string> = {};
 
-  constructor(
-    private journeyService: JourneyService,
-    private extras: JourneyExtrasService,
-    private router: Router
-  ) {}
+  constructor(private journeyService: JourneyService, private router: Router) {}
 
   ngOnInit(): void {
-    this.journeyService.list().subscribe({ next: (l) => (this.list = l) });
+    this.journeyService
+      .list()
+      .subscribe({ next: (res) => (this.journeyResponseDTO = res) });
+  }
+
+  goToCustomer() {
+    this.router.navigate(['/customer']);
+  }
+
+  goToVehicle() {
+    this.router.navigate(['/vehicle']);
   }
 
   goNew() {
     this.router.navigate(['/journeys/new']);
   }
 
-  openDetail(j: JourneyResponseDTO) {
-    this.router.navigate(['/journeys', j.id]);
+  openDetail(journey: JourneyResponseDTO) {
+    this.router.navigate(['/journeys', journey.id]);
   }
 }

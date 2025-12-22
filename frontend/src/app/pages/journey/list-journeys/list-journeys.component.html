@@ -1,12 +1,51 @@
 <div class="page">
-  <h2>Minhas Jornadas</h2>
-  <button (click)="goNew()">Nova Jornada</button>
+  <div class="head-list-journey">
+    <span>Acompanhar jornada</span>
+    <button class="btn btn-primary" (click)="goNew()">Nova Jornada</button>
+  </div>
 
   <div class="list">
-    <div *ngFor="let j of list" class="card" (click)="openDetail(j)">
-      <h3>{{ j.name }}</h3>
-      <p>{{ j.description }}</p>
-      <div>Status: {{ j.status }}</div>
+    <div
+      *ngFor="let journey of journeyResponseDTO"
+      class="card-journey"
+      (click)="openDetail(journey)"
+    >
+      <h3>{{ journey.name }}</h3>
+      <p>{{ journey.description }}</p>
+      <p>Motorista Id: {{ journey.driverCompanyLinkIds }}</p>
+      <p>Veiculo Id: {{ journey.vehicleIds }}</p>
+    </div>
+  </div>
+
+  <div class="services">
+    <span> Serviços disponiveis!</span>
+    <div class="gestao">
+      <span class="title">Gestão</span>
+      <span>Controle de passageiros</span>
+      <span>Crie suas jornadas e as edite a qualquer momento</span>
+      <span>Confirmação de embarque</span>
+      <span>Enquetes</span>
+      <span>Avisos importantes</span>
+    </div>
+    <div class="financeiro">
+      <span class="title">Financeiro</span>
+      <span>Controle facilmente o pagamento de mensalidades.</span>
+      <span>Acompanhe suas finanças.</span>
+    </div>
+  </div>
+
+  <div class="card-options">
+    <div class="bus" (click)="goToVehicle()">
+      <img src="assets/imgs/mini-bus.png" alt="mini onibus" />
+      <span>Cadastrar veiculo</span>
+    </div>
+    <div class="client" (click)="goToCustomer()">
+      <img src="assets/imgs/mini-user.png" alt="mini user" />
+      <span>Adicionar cliente</span>
+    </div>
+    <div class="driver" (click)="goToCustomer()">
+      <img src="assets/imgs/mini-driver.png" alt="mini driver" />
+      <span>Adicionar motorista</span>
     </div>
   </div>
 </div>
