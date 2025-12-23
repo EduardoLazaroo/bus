@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { AuthService, UserDTO } from '../../../core/services/auth.service';
+
 import { CompanyDTO } from '../../../core/models/company.model';
 import { CompanyService } from '../../../core/services/company.service';
+import { UserDTO, UserRole } from '../../../core/models/auth.model';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-final-registration-owner',
@@ -14,14 +16,14 @@ import { CompanyService } from '../../../core/services/company.service';
   styleUrls: ['./final-registration-owner.component.scss'],
 })
 export class FinalRegistrationOwnerComponent implements OnInit {
-  userRole: string | null = null;
+  role: string | null = null;
   step: number = 1;
 
   user: UserDTO = {
     name: '',
     email: '',
     password: '',
-    role: 'CLIENT',
+    role: UserRole.OWNER,
   };
 
   company: CompanyDTO = {
@@ -50,7 +52,7 @@ export class FinalRegistrationOwnerComponent implements OnInit {
     private router: Router,
     private companyService: CompanyService
   ) {
-    this.userRole = this.authService.getUserRole();
+    this.role = this.authService.getUserRole();
   }
 
   ngOnInit(): void {
@@ -81,7 +83,6 @@ export class FinalRegistrationOwnerComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erro ao atualizar usuário', err);
-        alert('Erro ao atualizar usuário');
       },
     });
   }

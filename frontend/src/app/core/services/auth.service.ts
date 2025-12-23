@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { UserDTO, UserRole } from '../models/auth.model';
-export type { UserDTO, UserRole } from '../models/auth.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {

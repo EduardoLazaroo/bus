@@ -1,5 +1,10 @@
-export type UserRole = 'CLIENT' | 'ADMIN' | 'DRIVER' | 'OWNER';
 
+export enum UserRole {
+  ADMIN = 'ADMIN',
+  CLIENT = 'CLIENT',
+  DRIVER = 'DRIVER',
+  OWNER = 'OWNER',
+}
 export interface UserDTO {
   id?: number;
   name?: string;
@@ -14,5 +19,5 @@ export interface UserDTO {
   numero?: string;
 
   role?: UserRole;
-  token?: string;    // JWT retornado no login
+  token?: string; // JWT retornado no login
 }

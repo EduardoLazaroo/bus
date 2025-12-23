@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface JourneyClientRepository extends JpaRepository<JourneyClient, Long> {
     List<JourneyClient> findByJourneyId(Long journeyId);
+    List<JourneyClient> findByCompanyLinkId(Long companyLinkId);
 }

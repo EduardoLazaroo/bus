@@ -5,6 +5,8 @@ import { FinalRegistrationClientComponent } from '../final-registration-client/f
 import { CompanyLinkService } from '../../../core/services/companyLink.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { NavbarComponent } from '../../navbar/navbar.component';
+import { ListJourneysComponent } from '../../journey/list-journeys/list-journeys.component';
+import { JourneyService } from '../../../core/services/journey.service';
 export type ClientFlowStatus = 'NO_COMPANY' | 'PENDING' | 'APPROVED';
 
 @Component({
@@ -15,6 +17,7 @@ export type ClientFlowStatus = 'NO_COMPANY' | 'PENDING' | 'APPROVED';
     UserSelectCompanyComponent,
     FinalRegistrationClientComponent,
     NavbarComponent,
+    ListJourneysComponent,
   ],
   templateUrl: './home-client.component.html',
   styleUrls: ['./home-client.component.scss'],
@@ -26,7 +29,8 @@ export class HomeClientComponent implements OnInit {
 
   constructor(
     private companyLinkService: CompanyLinkService,
-    private authService: AuthService
+    private authService: AuthService,
+    private journeyService: JourneyService
   ) {
     this.userName = this.authService.getUserName();
   }
@@ -38,7 +42,7 @@ export class HomeClientComponent implements OnInit {
   resolveClientStatus(): void {
     this.companyLinkService.getMyLinks().subscribe({
       next: (links) => {
-        console.warn(links)
+        console.warn(links);
         if (links.some((l) => l.status === 'APPROVED')) {
           this.status = 'APPROVED';
           return;

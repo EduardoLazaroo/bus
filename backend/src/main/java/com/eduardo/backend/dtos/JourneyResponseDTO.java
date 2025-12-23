@@ -17,4 +17,5 @@ public class JourneyResponseDTO {
     private List<Long> driverCompanyLinkIds;
     private List<Long> clientCompanyLinkIds;
     private List<Long> vehicleIds;
+    private List<JourneyStopDTO> stops;
 }

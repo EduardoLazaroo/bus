@@ -3,9 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { JourneyService } from '../../../core/services/journey.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { JourneyResponseDTO } from '../../../core/models/journey.model';
-import { JourneyExtrasService } from '../../../core/services/journey-extras.service';
-import { JourneyNoticeDTO } from '../../../core/models/journey-notice.model';
 import { NavbarComponent } from '../../navbar/navbar.component';
 
 @Component({
@@ -17,31 +16,41 @@ import { NavbarComponent } from '../../navbar/navbar.component';
 })
 export class ListJourneysComponent implements OnInit {
   journeyResponseDTO: JourneyResponseDTO[] = [];
-  noticesMap: Record<number, JourneyNoticeDTO[]> = {};
-  showingNotices: Record<number, boolean> = {};
-  newNoticeText: Record<number, string> = {};
+  role: string | null = null;
 
-  constructor(private journeyService: JourneyService, private router: Router) {}
+  constructor(
+    private journeyService: JourneyService,
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
-    this.journeyService
-      .list()
-      .subscribe({ next: (res) => (this.journeyResponseDTO = res) });
+    this.role = this.authService.getUserRole();
+
+    if (this.role === 'CLIENT' || this.role === 'DRIVER') {
+      this.journeyService.listMy().subscribe({
+        next: (res) => (this.journeyResponseDTO = res),
+      });
+    } else {
+      this.journeyService.list().subscribe({
+        next: (res) => (this.journeyResponseDTO = res),
+      });
+    }
   }
 
-  goToCustomer() {
+  goToCustomer(): void {
     this.router.navigate(['/customer']);
   }
 
-  goToVehicle() {
+  goToVehicle(): void {
     this.router.navigate(['/vehicle']);
   }
 
-  goNew() {
+  goToCreateJourney(): void {
     this.router.navigate(['/journeys/new']);
   }
 
-  openDetail(journey: JourneyResponseDTO) {
+  openJourneyDetails(journey: JourneyResponseDTO): void {
     this.router.navigate(['/journeys', journey.id]);
   }
 }

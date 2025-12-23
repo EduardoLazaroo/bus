@@ -39,5 +39,8 @@ public class Journey {
 
     @OneToMany(mappedBy = "journey", cascade = CascadeType.ALL)
     private List<JourneyVehicle> vehicles;
+
+    @OneToMany(mappedBy = "journey", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<JourneyStop> stops;
 }
 

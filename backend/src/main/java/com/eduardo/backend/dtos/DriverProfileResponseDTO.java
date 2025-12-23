@@ -19,5 +19,4 @@ public class DriverProfileResponseDTO {
 	private LocalDate cnhExpirationDate;
 	private String cnhImage;
 	private Boolean active;
-
 }

@@ -1,8 +1,9 @@
 import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { AuthService, UserDTO } from '../../core/services/auth.service';
+import { AuthService } from '../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
+import { UserDTO } from '../../core/models/auth.model';
 @Component({
   selector: 'app-profile',
   standalone: true,

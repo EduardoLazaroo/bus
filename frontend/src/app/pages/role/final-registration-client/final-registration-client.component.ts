@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { UserDTO } from '../../../core/models/auth.model';
+import { UserDTO, UserRole } from '../../../core/models/auth.model';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
@@ -18,7 +18,7 @@ export class FinalRegistrationClientComponent implements OnInit {
     name: '',
     email: '',
     password: '',
-    role: 'CLIENT',
+    role: UserRole.CLIENT,
   };
 
   constructor(private authService: AuthService) {}
@@ -40,7 +40,6 @@ export class FinalRegistrationClientComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erro ao atualizar usuário', err);
-        alert('Erro ao atualizar usuário');
       },
     });
   }

@@ -1,51 +1,69 @@
-<div class="page">
-  <div class="head-list-journey">
-    <span>Acompanhar jornada</span>
-    <button class="btn btn-primary" (click)="goNew()">Nova Jornada</button>
-  </div>
+<!-- OWNER -->
+<div *ngIf="role === 'OWNER'">
+  <div class="page-owner">
+    <div class="head-list-journey">
+      <span>Acompanhar jornada</span>
 
-  <div class="list">
-    <div
-      *ngFor="let journey of journeyResponseDTO"
-      class="card-journey"
-      (click)="openDetail(journey)"
-    >
-      <h3>{{ journey.name }}</h3>
-      <p>{{ journey.description }}</p>
-      <p>Motorista Id: {{ journey.driverCompanyLinkIds }}</p>
-      <p>Veiculo Id: {{ journey.vehicleIds }}</p>
-    </div>
-  </div>
+      <button class="btn btn-primary" (click)="goToCreateJourney()">
+        Nova Jornada
+      </button>
 
-  <div class="services">
-    <span> Serviços disponiveis!</span>
-    <div class="gestao">
-      <span class="title">Gestão</span>
-      <span>Controle de passageiros</span>
-      <span>Crie suas jornadas e as edite a qualquer momento</span>
-      <span>Confirmação de embarque</span>
-      <span>Enquetes</span>
-      <span>Avisos importantes</span>
-    </div>
-    <div class="financeiro">
-      <span class="title">Financeiro</span>
-      <span>Controle facilmente o pagamento de mensalidades.</span>
-      <span>Acompanhe suas finanças.</span>
-    </div>
-  </div>
+      <div class="list">
+        <div
+          *ngFor="let journey of journeyResponseDTO"
+          class="card-journey"
+          (click)="openJourneyDetails(journey)"
+        >
+          <h3>{{ journey.name }}</h3>
+          <p>{{ journey.description }}</p>
+        </div>
+      </div>
 
-  <div class="card-options">
-    <div class="bus" (click)="goToVehicle()">
-      <img src="assets/imgs/mini-bus.png" alt="mini onibus" />
-      <span>Cadastrar veiculo</span>
-    </div>
-    <div class="client" (click)="goToCustomer()">
-      <img src="assets/imgs/mini-user.png" alt="mini user" />
-      <span>Adicionar cliente</span>
-    </div>
-    <div class="driver" (click)="goToCustomer()">
-      <img src="assets/imgs/mini-driver.png" alt="mini driver" />
-      <span>Adicionar motorista</span>
+      <div class="services">
+        <span>Serviços disponíveis!</span>
+
+        <div class="gestao">
+          <span class="title">Gestão</span>
+          <span>Controle de passageiros</span>
+          <span>Crie suas jornadas e edite a qualquer momento</span>
+          <span>Confirmação de embarque</span>
+          <span>Enquetes</span>
+          <span>Avisos importantes</span>
+        </div>
+
+        <div class="financeiro">
+          <span class="title">Financeiro</span>
+          <span>Controle facilmente o pagamento de mensalidades</span>
+          <span>Acompanhe suas finanças</span>
+        </div>
+      </div>
+
+      <div class="card-options">
+        <div class="bus" (click)="goToVehicle()">
+          <img src="assets/imgs/mini-bus.png" alt="mini ônibus" />
+          <span>Cadastrar veículo</span>
+        </div>
+
+        <div class="client" (click)="goToCustomer()">
+          <img src="assets/imgs/mini-user.png" alt="mini user" />
+          <span>Adicionar cliente</span>
+        </div>
+
+        <div class="driver" (click)="goToCustomer()">
+          <img src="assets/imgs/mini-driver.png" alt="mini driver" />
+          <span>Adicionar motorista</span>
+        </div>
+      </div>
     </div>
   </div>
+</div>
+
+<!-- DRIVER -->
+<div *ngIf="role === 'DRIVER'">
+  <span>Driver aqui</span>
+</div>
+
+<!-- CLIENT -->
+<div *ngIf="role === 'CLIENT'">
+  <span>Client aqui</span>
 </div>

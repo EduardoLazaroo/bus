@@ -1,9 +1,9 @@
 package com.eduardo.backend.services.impl;
 
-import com.eduardo.backend.dtos.JourneyCreateDTO;
-import com.eduardo.backend.dtos.JourneyResponseDTO;
+import com.eduardo.backend.dtos.*;
 import com.eduardo.backend.enums.JourneyStatus;
 import com.eduardo.backend.enums.LinkStatus;
+import com.eduardo.backend.enums.UserRole;
 import com.eduardo.backend.exceptions.BadRequestException;
 import com.eduardo.backend.models.*;
 import com.eduardo.backend.repositories.*;
@@ -24,7 +24,8 @@ public class JourneyServiceImpl implements JourneyService {
     private final JourneyDriverRepository journeyDriverRepository;
     private final JourneyClientRepository journeyClientRepository;
     private final JourneyVehicleRepository journeyVehicleRepository;
-    private final com.eduardo.backend.repositories.UserRepository userRepository;
+    private final JourneyStopRepository journeyStopRepository;
+    private final UserRepository userRepository;
 
     public JourneyServiceImpl(
             JourneyRepository journeyRepository,
@@ -33,7 +34,8 @@ public class JourneyServiceImpl implements JourneyService {
             JourneyDriverRepository journeyDriverRepository,
             JourneyClientRepository journeyClientRepository,
             JourneyVehicleRepository journeyVehicleRepository
-            , com.eduardo.backend.repositories.UserRepository userRepository
+            , JourneyStopRepository journeyStopRepository
+            , UserRepository userRepository
     ) {
         this.journeyRepository = journeyRepository;
         this.companyLinkRepository = companyLinkRepository;
@@ -41,6 +43,7 @@ public class JourneyServiceImpl implements JourneyService {
         this.journeyDriverRepository = journeyDriverRepository;
         this.journeyClientRepository = journeyClientRepository;
         this.journeyVehicleRepository = journeyVehicleRepository;
+        this.journeyStopRepository = journeyStopRepository;
         this.userRepository = userRepository;
     }
 
@@ -101,7 +104,25 @@ public class JourneyServiceImpl implements JourneyService {
             });
         }
 
-        return toDTO(saved);
+        // stops
+        var stops = dto.getStops();
+        if (stops != null) {
+            stops.forEach(s -> {
+                JourneyStop js = JourneyStop.builder()
+                        .journey(saved)
+                        .seqOrder(s.getSeqOrder())
+                        .name(s.getName())
+                        .address(s.getAddress())
+                        .latitude(s.getLatitude())
+                        .longitude(s.getLongitude())
+                        .build();
+                journeyStopRepository.save(js);
+            });
+        }
+
+        // reload journey so relationships (drivers, vehicles, stops) are populated
+        Journey reloaded = journeyRepository.findById(saved.getId()).orElse(saved);
+        return toDTO(reloaded);
     }
 
     @Override
@@ -119,8 +140,32 @@ public class JourneyServiceImpl implements JourneyService {
         return toDTO(j);
     }
 
+    @Override
+    public List<JourneyResponseDTO> listMyJourneys() {
+        var user = SecurityUtils.getCurrentUserOrThrow(userRepository);
+
+        // find user's approved company link
+        CompanyLink companyLink = companyLinkRepository.findByUserIdAndStatus(user.getId(), LinkStatus.APPROVED)
+                .orElseThrow(() -> new BadRequestException("Usuário não possui vínculo aprovado"));
+
+        // if user is a client, return journeys where he is enrolled as client
+        if (companyLink.getRoleInCompany() == com.eduardo.backend.enums.UserRole.CLIENT) {
+            var jcs = journeyClientRepository.findByCompanyLinkId(companyLink.getId());
+            return jcs.stream().map(jc -> toDTO(jc.getJourney())).collect(Collectors.toList());
+        }
+
+        // if user is a driver, return journeys where he is assigned as driver
+        if (companyLink.getRoleInCompany() == com.eduardo.backend.enums.UserRole.DRIVER) {
+            var jds = journeyDriverRepository.findByCompanyLinkId(companyLink.getId());
+            return jds.stream().map(jd -> toDTO(jd.getJourney())).collect(Collectors.toList());
+        }
+
+        // otherwise (OWNER, ADMIN...), return company journeys
+        return journeyRepository.findByCompanyLinkId(companyLink.getId()).stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
         @Override
-        public com.eduardo.backend.dtos.JourneyOptionsDTO getOptions() {
+        public JourneyOptionsDTO getOptions() {
         var user = SecurityUtils.getCurrentUserOrThrow(userRepository);
         CompanyLink cl = companyLinkRepository.findByUserIdAndStatus(user.getId(), LinkStatus.APPROVED)
             .orElseThrow(() -> new BadRequestException("Usuário não possui vínculo aprovado"));
@@ -130,8 +175,8 @@ public class JourneyServiceImpl implements JourneyService {
         var approvedLinks = companyLinkRepository.findByCompanyIdAndStatus(companyId, LinkStatus.APPROVED);
 
         var drivers = approvedLinks.stream()
-            .filter(l -> l.getRoleInCompany() == com.eduardo.backend.enums.UserRole.DRIVER)
-            .map(l -> com.eduardo.backend.dtos.CompanyLinkResponseDTO.builder()
+            .filter(l -> l.getRoleInCompany() == UserRole.DRIVER)
+            .map(l -> CompanyLinkResponseDTO.builder()
                 .id(l.getId())
                 .userId(l.getUser().getId())
                 .userName(l.getUser().getName())
@@ -143,8 +188,8 @@ public class JourneyServiceImpl implements JourneyService {
             .collect(Collectors.toList());
 
         var clients = approvedLinks.stream()
-            .filter(l -> l.getRoleInCompany() == com.eduardo.backend.enums.UserRole.CLIENT)
-            .map(l -> com.eduardo.backend.dtos.CompanyLinkResponseDTO.builder()
+            .filter(l -> l.getRoleInCompany() == UserRole.CLIENT)
+            .map(l -> CompanyLinkResponseDTO.builder()
                 .id(l.getId())
                 .userId(l.getUser().getId())
                 .userName(l.getUser().getName())
@@ -156,7 +201,7 @@ public class JourneyServiceImpl implements JourneyService {
             .collect(Collectors.toList());
 
         var vehicles = vehicleRepository.findByCompanyLinkIdAndActiveTrue(cl.getId()).stream()
-            .map(v -> com.eduardo.backend.dtos.VehicleResponseDTO.builder()
+            .map(v -> VehicleResponseDTO.builder()
                 .id(v.getId())
                 .model(v.getModel())
                 .licensePlate(v.getLicensePlate())
@@ -169,7 +214,7 @@ public class JourneyServiceImpl implements JourneyService {
                 .build())
             .collect(Collectors.toList());
 
-        return com.eduardo.backend.dtos.JourneyOptionsDTO.builder()
+        return JourneyOptionsDTO.builder()
             .drivers(drivers)
             .clients(clients)
             .vehicles(vehicles)
@@ -203,6 +248,14 @@ public class JourneyServiceImpl implements JourneyService {
                 .driverCompanyLinkIds(j.getDrivers() != null ? j.getDrivers().stream().map(d -> d.getCompanyLink().getId()).collect(Collectors.toList()) : null)
                 .clientCompanyLinkIds(j.getClients() != null ? j.getClients().stream().map(c -> c.getCompanyLink().getId()).collect(Collectors.toList()) : null)
                 .vehicleIds(j.getVehicles() != null ? j.getVehicles().stream().map(v -> v.getVehicle().getId()).collect(Collectors.toList()) : null)
+                .stops(j.getStops() != null ? j.getStops().stream().map(s -> JourneyStopDTO.builder()
+                    .id(s.getId())
+                    .seqOrder(s.getSeqOrder())
+                    .name(s.getName())
+                    .address(s.getAddress())
+                    .latitude(s.getLatitude())
+                    .longitude(s.getLongitude())
+                    .build()).collect(Collectors.toList()) : null)
                 .build();
     }
 }

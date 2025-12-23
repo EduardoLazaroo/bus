@@ -5,6 +5,7 @@ import { UserSelectCompanyComponent } from '../user-select-company/user-select-c
 import { FinalRegistrationClientComponent } from '../final-registration-client/final-registration-client.component';
 import { CompanyLinkService } from '../../../core/services/companyLink.service';
 import { NavbarComponent } from '../../navbar/navbar.component';
+import { ListJourneysComponent } from '../../journey/list-journeys/list-journeys.component';
 export type ClientFlowStatus = 'NO_COMPANY' | 'PENDING' | 'APPROVED';
 
 @Component({
@@ -15,6 +16,7 @@ export type ClientFlowStatus = 'NO_COMPANY' | 'PENDING' | 'APPROVED';
     UserSelectCompanyComponent,
     FinalRegistrationClientComponent,
     NavbarComponent,
+    ListJourneysComponent
   ],
   templateUrl: './home-driver.component.html',
   styleUrls: ['./home-driver.component.scss'],

@@ -1,5 +1,6 @@
 package com.eduardo.backend.controllers;
 
+import com.eduardo.backend.enums.LinkStatus;
 import com.eduardo.backend.exceptions.BadRequestException;
 import com.eduardo.backend.models.Journey;
 import com.eduardo.backend.models.JourneyPoll;
@@ -55,7 +56,7 @@ public class JourneyPollController {
         var user = SecurityUtils.getCurrentUserOrThrow(userRepository);
         Journey j = journeyRepository.findById(journeyId).orElseThrow(() -> new BadRequestException("Jornada não encontrada"));
 
-        var cl = companyLinkRepository.findByUserIdAndStatus(user.getId(), com.eduardo.backend.enums.LinkStatus.APPROVED)
+        var cl = companyLinkRepository.findByUserIdAndStatus(user.getId(), LinkStatus.APPROVED)
                 .orElseThrow(() -> new BadRequestException("Usuário não possui vínculo aprovado"));
         if (!j.getCompanyLink().getCompany().getId().equals(cl.getCompany().getId())) {
             throw new BadRequestException("Jornada não pertence à mesma empresa do usuário");
